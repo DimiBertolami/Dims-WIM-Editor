@@ -1,0 +1,43 @@
+how to update windows 10 ISO/Wim
+
+topics:
+- extra drivers
+- slipstream microsoft kb-updates
+- extra executables
+- how to write a PE-Network script
+
+from dosbox: 
+
+:: create some temporary directories:
+:: (Here i'll download all the hotfixes)
+MD C:\Mount
+
+:: extra drivers go into this directory. They will be installed recursively
+MD C:\Mount\Drivers
+
+:: boot.wim from the windows ISO goes here
+MD C:\Mount\BootWIM
+
+:: this is our Mount-Target Directory (in order to mount a wim file this folder has to be empty)
+md C:\MOUNT\MOUNTDIR
+
+:: To Mount an ISO with powershell: 
+powershell -Command "Mount-DiskImage -ImagePath C:\Users\Admin\Desktop\dewSystems\ISO\Gandalf10PE.ISO"
+
+:: detect drive letter where iso is mounted and copy wim to bootWIM Folder
+FOR /D %x in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\sources\boot.wim (copy %x:\sources\boot.wim C:\Mount\BootWIM)
+
+:: check what image index to use
+dism /Get-WimInfo /WimFile:C:\Mount\BootWIM\boot.wim
+
+:: mount wim file into mount-directory
+dism /mount-wim /wimfile:C:\Mount\BootWIM\boot.wim /index:1 /MountDir:C:\Mount\MOUNTDIR
+
+:: recursively add drivers to your PE (you must mount wim file first): 
+dism /image:C:\Mount\MOUNTDIR /Add-Driver /Driver:D:\Drivers /recurse
+
+:: download necessary updates manually
+:: slipstream downloaded windows updates into your solution
+Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath=kb4456655.msu /LogPath=C:\mount\dism.log
+OR ( for /f "usebackq" %x in (`dir *.msu /b`) do %x )
+or ( for /f "usebackq" %x in (`dir *.msu /b`) do start /b /wait %x /log:updates.log)
