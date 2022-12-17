@@ -1,0 +1,33 @@
+
+
+-- ADK stuff --
+
+copype %PROCESSOR_ARCHITECTURE% c:\mount\pe
+pushd c:\Mount\pe
+dir *.wim /s /b
+
+dism /mount-wim /wimfile:media\sources\boot.wim /index:1 /mountdir:c:\mount\pe\mount
+
+takeown /F "mount\Windows\System32\winpe.jpg"
+
+
+dism /get-wiminfo /wimfile:c:\Mount\BootWIM\boot.wim /index:1
+dism /get-MOUNTEDwiminfo
+
+pushd C:\ADK\Assessment and Deployment Kit\Windows Preinstallation Environment\amd64\WinPE_OCs
+dism /image:C:\Mount\pe\mount /Get-Features
+
+dir *.cab /b
+for /f "usebackq" %x in (`dir *.cab /b`) do dism /image:C:\Mount\pe\mount /Add-Package /packagepath:%x
+cd en-us
+for /f "usebackq" %x in (`dir *.cab /b`) do dism /image:C:\Mount\pe\mount /Add-Package /packagepath:%x
+
+dism /cleanup-image /image:c:\mount\pe\mount /startcomponentcleanup /resetbase /scratchdir:C:\temp
+:: Dism /Unmount-Image /MountDir:"c:\mount\pe\mount" /commit
+dism /unmount-wim /mountdir:c:\mount\pe\mount /commit
+
+set path=C:\ADK\Assessment and Deployment Kit\Deployment Tools\amd64\Oscdimg\;%path%
+
+MakeWinPEMedia.cmd /iso /f c:\Mount\pe c:\Mount\dimiPE.iso
+echo say hello to your new iso: c:\Mount\dimiPE.iso
+
