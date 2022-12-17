@@ -2,8 +2,10 @@
 
 quick dotnet WPF gui app
 Windows ISO Editor can: 
+  - silent download + install windows Assesment and deployment kit
+  - silent download + install Win ADK PE Addon
   - Mount ISO
-  - Copy WIM
+  - Copy WIM to temp directory
   - Mount Wim
   - integrate drivers
   - slipstream updates in iso
