@@ -1,6 +1,9 @@
 # Dims-WIM-Editor
 
 quick dotnet WPF gui app
+This is the folder structure I used.. you do what you want offcourse..
+![image](https://user-images.githubusercontent.com/77209365/208245447-a03cd392-b8e0-44aa-88bf-907faf1bac00.png)
+
 Windows ISO Editor can: 
   - silent download + install windows Assesment and deployment kit
   - silent download + install Win ADK PE Addon
