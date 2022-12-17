@@ -1,8 +1,12 @@
 # Dims-WIM-Editor
 
 quick dotnet WPF gui app
-This is the folder structure I used.. you do what you want offcourse..
+
+> This is the folder structure I used.. you do what you want offcourse..
 ![image](https://user-images.githubusercontent.com/77209365/208245447-a03cd392-b8e0-44aa-88bf-907faf1bac00.png)
+
+> in case you want to see only the dos commands I initially used:
+https://github.com/DimiBertolami/Dims-WIM-Editor/blob/main/doscmds.txt
 
 Windows ISO Editor can: 
   - silent download + install windows Assesment and deployment kit
