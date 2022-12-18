@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using DimsISOTweaker.ReadStdOut;
 namespace DimsISOTweaker
 {
     /// <summary>
@@ -31,25 +31,30 @@ namespace DimsISOTweaker
         public void MountISO(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("cmd.exe", "/c MODE CON cols=80 LINES=6 & powershell.exe -Command \"Mount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
-            DriveInfo[] drives = DriveInfo.GetDrives();
-            for (int i = 0; i < drives.Count(); i++)
-            {
-                if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
-                {
-                    System.Diagnostics.Process.Start("cmd.exe", "/k MODE CON cols=80 LINES=6 & xcopy /e /z " + drives[i].Name + "Sources\\boot.wim "+ MountPoint.Text + "\\BootWIM");
-                }
-            }
+            //DriveInfo[] drives = DriveInfo.GetDrives();
+            //for (int i = 0; i < drives.Count(); i++)
+            //{
+            //    if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
+            //    {
+            //        System.Diagnostics.Process.Start("cmd.exe", "/k MODE CON cols=80 LINES=6 & xcopy /e /z " + drives[i].Name + "Sources\\boot.wim "+ MountPoint.Text + "\\BootWIM");
+            //    }
+            //}
         }
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
-            //var iso = ISO.Text; if (iso == null) { return; }
-            //MessageBox.Show("copy boot.wim");
+            //DriveInfo[] drives = DriveInfo.GetDrives();
+            //for (int i = 0; i < drives.Count(); i++)
+            //{
+            //    if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
+            //    {
+            //        System.Diagnostics.Process.Start("cmd.exe", "/k MODE CON cols=80 LINES=6 & xcopy /e /z " + drives[i].Name + "Sources\\boot.wim " + MountPoint.Text + "\\BootWIM");
+            //    }
+            //}
+
             System.Diagnostics.Process.Start("cmd.exe", " /c echo off & MODE CON cols=80 LINES=6 & FOR /D %x in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\\sources\\boot.wim (xcopy /e /z %x:\\sources\\boot.wim "+ MountPoint.Text + "\\BootWIM)");
         }
         public void getWIMInfo(object sender, RoutedEventArgs e)
         {
-            //var iso = ISO.Text; if (iso == null) { return; }
-            //MessageBox.Show("ISO: " + iso);
             System.Diagnostics.Process.Start("cmd.exe",
                     " /k dism /Get-MountedWimInfo");
         }
@@ -57,8 +62,8 @@ namespace DimsISOTweaker
         {
             System.Diagnostics.Process.Start("cmd.exe",
             " /c MODE CON cols=80 LINES=6 & md " + MountPoint.Text + " & md C:\\Mount\\Drivers & md " + MountPoint.Text + "\\MOUNTDIR & MD " + MountPoint.Text + "\\BootWIM");
-            System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
-            myProcessInfo.Verb = "runas";
+            //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
+            //myProcessInfo.Verb = "runas";
             System.Diagnostics.Process.Start("cmd.exe",
              " /c MODE CON cols=80 LINES=6 & DISM /mount-wim /wimfile:" + MountPoint.Text + "\\BootWIM\\boot.wim /index:1 /MountDir:"+ MountPoint.Text + "\\MOUNTDIR");
 
@@ -88,8 +93,8 @@ namespace DimsISOTweaker
         private void UnMountWIM(object sender, RoutedEventArgs e)
         {
             // & echo to unmount wim file just execute & echo dism /unmount-wim /mountdir:c:\\Mount\\MOUNTDIR /discard (or /commit if you want to save changes)
-            System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
-            myProcessInfo.Verb = "runas";
+            //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
+            //myProcessInfo.Verb = "runas";
             System.Diagnostics.Process.Start("cmd.exe",
              " /c MODE CON cols=80 LINES=6 & dism /unmount-wim /mountdir:"+ MountPoint.Text + "\\MOUNTDIR /commit");
 
@@ -117,6 +122,69 @@ namespace DimsISOTweaker
             System.Diagnostics.Process.Start("cmd.exe",
              " /k MODE CON cols=80 LINES=6 & C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q");
         }
+
+        private void dismountISO(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("cmd.exe", "/c powershell.exe -Command \"Dismount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
+
+        }
+
+        private void addCabs(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("cmd.exe",
+                "/k pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\" & ECHO dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\ & cd en-us & ECHO dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\");
+        }
+
+        private void Testme(object sender, RoutedEventArgs e)
+        {
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = " /k echo baaye baaye koeievlaai!",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                }
+            };
+            process.Start();
+            {
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    var line = process.StandardOutput.ReadLine();
+                    //line.SkipWhile<char>(char.IsWhiteSpace);
+                    MessageBox.Show(line);
+                }
+            }
+        }
+
+        private void readStandardOutput(object sender, RoutedEventArgs e)
+        {
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = " /k echo baaye baaye koeievlaai!",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                }
+            };
+            process.Start();
+            {
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    var line = process.StandardOutput.ReadLine();
+                    //line.SkipWhile<char>(char.IsWhiteSpace);
+                    MessageBox.Show(line);
+                }
+            }
+        }
+
+
+
     }
 }
 
