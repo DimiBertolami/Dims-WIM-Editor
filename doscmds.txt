@@ -25,7 +25,7 @@ md C:\MOUNT\MOUNTDIR
 powershell -Command "Mount-DiskImage -ImagePath C:\Users\Admin\Desktop\dewSystems\ISO\Gandalf10PE.ISO"
 
 :: detect drive letter where iso is mounted and copy wim to bootWIM Folder
-FOR /D %x in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\sources\boot.wim (copy %x:\sources\boot.wim C:\Mount\BootWIM)
+FOR /D %x in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\sources\boot.wim (copy %x:\sources\boot.wim C:\Mount\BootWIM)
 
 :: check what image index to use
 dism /Get-WimInfo /WimFile:C:\Mount\BootWIM\boot.wim
@@ -36,8 +36,29 @@ dism /mount-wim /wimfile:C:\Mount\BootWIM\boot.wim /index:1 /MountDir:C:\Mount\M
 :: recursively add drivers to your PE (you must mount wim file first): 
 dism /image:C:\Mount\MOUNTDIR /Add-Driver /Driver:D:\Drivers /recurse
 
+:: add optional winPE components (cab files)
+pushd "C:\ADK\Assessment and Deployment Kit\Windows Preinstallation Environment\amd64\WinPE_OCs"
+dism /Image:c:\mount\MOUNTDIR /Add-Package /PackagePath:"C:\ADK\Assessment and Deployment Kit\Windows Preinstallation Environment\amd64\WinPE_OCs\
+
+:: add language support
+cd en-us
+dism /Image:c:\mount\MOUNTDIR /Add-Package /PackagePath:"C:\ADK\Assessment and Deployment Kit\Windows Preinstallation Environment\amd64\WinPE_OCs\
+
+:: set scratchspace to maximum allowed
+Dism /Set-ScratchSpace:512 /Image:c:\mount\MOUNTDIR
+
 :: download necessary updates manually
-:: slipstream downloaded windows updates into your solution
-Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath=kb4456655.msu /LogPath=C:\mount\dism.log
+:: slipstream downloaded windows updates into your mounted virtual disk
+Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath=kb4456655.msu
 OR ( for /f "usebackq" %x in (`dir *.msu /b`) do %x )
 or ( for /f "usebackq" %x in (`dir *.msu /b`) do start /b /wait %x /log:updates.log)
+
+:: remounting in different folder this time.. 
+pushd "C:\ADK\Assessment and Deployment Kit\Windows Preinstallation Environment"
+dism /mount-wim /wimfile:C:\Mount\pe\media\sources\boot.wim /index:1 /mountdir:c:\mount\pe\mount
+
+:: disconnect virtual disk
+Dism /unmount-Wim /MountDir:c:\Mount\pe\mount /Commit
+
+:: make ADK WinPE ISO from boot.wim
+MakeWinPEMedia.cmd /iso C:\mount\pe C:\mount\dimpe.iso
