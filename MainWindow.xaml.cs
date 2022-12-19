@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using DimsISOTweaker.ReadStdOut;
 namespace DimsISOTweaker
 {
     /// <summary>
@@ -23,6 +22,8 @@ namespace DimsISOTweaker
     public partial class MainWindow : Window
     {
         public string Mounter { get; set; }
+        public ProcessStartInfo StartInfo { get; private set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,15 +31,27 @@ namespace DimsISOTweaker
 
         public void MountISO(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("cmd.exe", "/c MODE CON cols=80 LINES=6 & powershell.exe -Command \"Mount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
-            //DriveInfo[] drives = DriveInfo.GetDrives();
-            //for (int i = 0; i < drives.Count(); i++)
-            //{
-            //    if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
-            //    {
-            //        System.Diagnostics.Process.Start("cmd.exe", "/k MODE CON cols=80 LINES=6 & xcopy /e /z " + drives[i].Name + "Sources\\boot.wim "+ MountPoint.Text + "\\BootWIM");
-            //    }
-            //}
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = " /c powershell -command \"Mount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                }
+            };
+        process.Start();
+            {
+                var line = string.Empty;
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    line += process.StandardOutput.ReadLine();
+                }
+                MessageBox.Show(line);
+            }
+            //System.Diagnostics.Process.Start("cmd.exe", "/c MODE CON cols=80 LINES=6 & powershell.exe -Command \"Mount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
         }
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
