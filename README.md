@@ -71,8 +71,7 @@ Windows ISO Editor can:
 Now download these MSU update files manually from https://www.catalog.update.microsoft.com/home.aspx <br />and then slipstream them into your mounted boot.wim
 
 ```
-for /f "usebackq" %x in (`cmd /c dir *.msu /b`) do echo %x
-Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath=kb4456655.msu /LogPath=C:\mount\dism.log
+for /f "usebackq" %x in (`dir *.msu /b`) do Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath="%x"
 ```
 
 
