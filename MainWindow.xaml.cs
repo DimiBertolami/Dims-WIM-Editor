@@ -30,34 +30,58 @@ namespace DimsISOTweaker
 
         public void MountISO(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess("cmd.exe", " /c powershell -command \"Mount-DiskImage -ImagePath c:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
+            new ReadStdOut().CreateProcess("cmd.exe", 
+                " /c powershell -command \"Mount-DiskImage -ImagePath c:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"", 
+                false);
         }
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
+            //new ReadStdOut().CreateProcess("cmd.exe",
+            //    " /c md " + MountPoint.Text +
+            //    " & md C:\\Mount\\Drivers & md " + MountPoint.Text +
+            //    "\\MOUNTDIR & MD " + MountPoint.Text + "\\BootWIM",
+            //    false);
+            if(Directory.Exists("c:\\Mount"))
+            {
+                Directory.Delete("c:\\Mount", true); //the boolean means recursive delete = true
+            }
+            Directory.CreateDirectory("c:\\Mount\\Drivers");
+            Directory.CreateDirectory("c:\\Mount\\MOUNTPOINT");
+            Directory.CreateDirectory("c:\\Mount\\BootWIM");
             DriveInfo[] drives = DriveInfo.GetDrives();
             for (int i = 0; i < drives.Count(); i++)
             {
                 if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
                 {
-                    File.Copy(drives[i].Name + "Sources\\boot.wim", MountPoint.Text + "\\BootWIM\\boot.wim", true);
+                    File.Copy(drives[i].Name + "Sources\\boot.wim", 
+                        MountPoint.Text + "\\BootWIM\\boot.wim", 
+                        true);
                 }
             }
         }
         public void getWIMInfo(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess("cmd.exe", " /c dism /Get-MountedWimInfo");
+            new ReadStdOut().CreateProcess("cmd.exe", 
+                " /c dism /Get-MountedWimInfo", 
+                false);
         }
         public void MountWIM(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-                " /c md " + MountPoint.Text + " & md C:\\Mount\\Drivers & md " + MountPoint.Text + "\\MOUNTDIR & MD " + MountPoint.Text + "\\BootWIM");
-            new ReadStdOut().CreateProcess("cmd.exe",
-                " /c DISM /mount-wim /wimfile:" + MountPoint.Text + "\\BootWIM\\boot.wim /index:1 /MountDir:" + MountPoint.Text + "\\MOUNTDIR");
+                " /c DISM /mount-wim /wimfile:" + 
+                MountPoint.Text + 
+                "\\BootWIM\\boot.wim /index:1 /MountDir:" + 
+                MountPoint.Text + 
+                "\\MOUNTDIR", 
+                true);
         }
         public void AddPEDrivers(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-                " /c MODE CON cols=80 LINES=6 & dism /image:"+ MountPoint.Text + "\\MOUNTDIR /Add-Driver /Driver:"+ MountPoint.Text + "\\Drivers /recurse");
+                " /c dism /image:"+ MountPoint.Text + 
+                "\\MOUNTDIR /Add-Driver /Driver:" + MountPoint.Text + 
+                "\\Drivers /recurse", 
+                false);
         }
         void SlipstreamKB(object sender, RoutedEventArgs e)
         {
@@ -67,20 +91,29 @@ namespace DimsISOTweaker
             // update file from https://www.catalog.update.microsoft.com/home.aspx and slipstream it into
             // your installation source like i did here.. 
             new ReadStdOut().CreateProcess("cmd.exe",
-                " /c for /f \"usebackq\" %x in (`dir " + MountPoint.Text+"\\*.msu /b`) do wusa "+MountPoint.Text+"\\%x /quiet /norestart");
+                " /c for /f \"usebackq\" %x in (`dir " + 
+                MountPoint.Text+"\\*.msu /b`) do wusa "+
+                MountPoint.Text+"\\%x /quiet /norestart", 
+                false);
             //new ReadStdOut().CreateProcess("cmd.exe",
             //    " /c dism /image:c:\\Mount\\MOUNTDIR /Get-Packages");
             new ReadStdOut().CreateProcess("cmd.exe",
-            " /c echo for /f \"usebackq\" %x in (`dir " + MountPoint.Text + "\\*.msu /b`) do dism /Image:"+ MountPoint.Text + "\\MOUNTDIR /Add-Package /PackagePath=%x");
+            " /c echo for /f \"usebackq\" %x in (`dir " + 
+            MountPoint.Text + 
+            "\\*.msu /b`) do dism /Image:" + 
+            MountPoint.Text + 
+            "\\MOUNTDIR /Add-Package /PackagePath=%x", 
+            false);
         }
 
         private void UnMountWIM(object sender, RoutedEventArgs e)
         {
             // & echo to unmount wim file just execute & echo dism /unmount-wim /mountdir:c:\\Mount\\MOUNTDIR /discard (or /commit if you want to save changes)
-            //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
-            //myProcessInfo.Verb = "runas";
             new ReadStdOut().CreateProcess("cmd.exe",
-             " /c dism /unmount-wim /mountdir:" + MountPoint.Text + "\\MOUNTDIR /commit");
+             " /c dism /unmount-wim /mountdir:" + 
+             MountPoint.Text + 
+             "\\MOUNTDIR /commit", 
+             false);
 
             // dism /Cleanup-Mountpoints 
             // dism / get - mountedwiminfo
@@ -98,32 +131,36 @@ namespace DimsISOTweaker
             //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
             //myProcessInfo.Verb = "runas";
             new ReadStdOut().CreateProcess("cmd.exe",
-             " /k MODE CON cols=80 LINES=6 & C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
+             " /c C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q", 
+             false);
         }
 
         private void ADKPESetup(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-             " /k MODE CON cols=80 LINES=6 & C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q");
+             " /c C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q", 
+             false);
         }
 
         private void dismountISO(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-                "/c powershell.exe -Command \"Dismount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
-
+                "/c powershell.exe -Command \"Dismount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"", 
+                false);
         }
 
         private void addCabs(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-                "/k pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\" & ECHO dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\ & cd en-us & ECHO dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\");
+                "/c pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\" & dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\ & cd en-us & dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\", 
+                false);
         }
 
         private void Testme(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-                " /k echo baaye baaye koeievlaai!");
+                " /c echo baaye baaye koeievlaai!", 
+                false);
         }
 
     }

@@ -14,13 +14,20 @@ namespace DimsISOTweaker
     {
         public string binaryExecutable { get; set; }
         public string args { get; set; }
+        public bool bAdmin { get; set; }
 
-        public void CreateProcess(string binaryExecutable, string args)
+        public void CreateProcess(string? binaryExecutable, string? args, bool? bAdmin)
         {
-            MessageBox.Show(binaryExecutable + " " + args, " * ", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show(binaryExecutable + " " + args, " * ", MessageBoxButton.OK, MessageBoxImage.Information);
+            //if (bAdmin)
+            //{
+                //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
+                //myProcessInfo.Verb = "runas";
+            //}
             Process process = new Process();
             {
                 StartInfo = new ProcessStartInfo{ };
+                StartInfo.Verb = "runas";
             }
             process.StartInfo.FileName = binaryExecutable;
             process.StartInfo.Arguments = args;
