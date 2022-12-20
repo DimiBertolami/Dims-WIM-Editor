@@ -82,12 +82,10 @@ namespace DimsISOTweaker
         public void MountWIM(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-                " /c DISM /mount-wim /wimfile:" + 
-                MountPoint.Text + 
-                "\\BootWIM\\boot.wim /index:1 /MountDir:" + 
-                MountPoint.Text + 
-                "\\MOUNTDIR", 
-                true);
+                " /c DISM /mount-wim /wimfile:" + MountPoint.Text + 
+                "\\BootWIM\\boot.wim /index:" + Index.Text + 
+                " / MountDir:" + MountPoint.Text + 
+                "\\MOUNTDIR", true);
         }
         public void AddPEDrivers(object sender, RoutedEventArgs e)
         {
