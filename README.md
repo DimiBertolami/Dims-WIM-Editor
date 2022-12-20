@@ -16,6 +16,11 @@ Windows ISO Editor can:
   - Mount Wim
   - integrate drivers
   - slipstream updates in iso
+  - Cleanup Corrupted WIM Mountpoints
+  - Cleanup WIM
+  - Open up a shell prompt (*)
+  
+  #### TODO: When Shell is opened, output of buttons should be redirected to shell instead of messagebox!
   
 > A More recent screenshot.. alot has changed today!
 ![image](https://user-images.githubusercontent.com/77209365/208691466-d27e5b84-a48a-4d25-b9c0-099f2ce2f0d4.png)
