@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,8 +22,6 @@ namespace DimsISOTweaker
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string Mounter { get; set; }
-        public ProcessStartInfo StartInfo { get; private set; }
 
         public MainWindow()
         {
@@ -31,27 +30,7 @@ namespace DimsISOTweaker
 
         public void MountISO(object sender, RoutedEventArgs e)
         {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = " /c powershell -command \"Mount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                }
-            };
-        process.Start();
-            {
-                var line = string.Empty;
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    line += process.StandardOutput.ReadLine();
-                }
-                MessageBox.Show(line);
-            }
-            //System.Diagnostics.Process.Start("cmd.exe", "/c MODE CON cols=80 LINES=6 & powershell.exe -Command \"Mount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
+            new ReadStdOut().CreateProcess("cmd.exe", " /c powershell -command \"Mount-DiskImage -ImagePath c:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
         }
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
@@ -64,7 +43,8 @@ namespace DimsISOTweaker
             //    }
             //}
 
-            System.Diagnostics.Process.Start("cmd.exe", " /c echo off & MODE CON cols=80 LINES=6 & FOR /D %x in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\\sources\\boot.wim (xcopy /e /z %x:\\sources\\boot.wim "+ MountPoint.Text + "\\BootWIM)");
+            System.Diagnostics.Process.Start("cmd.exe", 
+                " /c echo off & FOR /D %x in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\\sources\\boot.wim (xcopy /e /z %x:\\sources\\boot.wim "+ MountPoint.Text + "\\BootWIM)");
         }
         public void getWIMInfo(object sender, RoutedEventArgs e)
         {

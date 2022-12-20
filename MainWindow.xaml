@@ -15,7 +15,7 @@
         <Label x:Name="LblISO" Content="ISO" HorizontalAlignment="Left" Margin="43,6,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.184,0.772" Width="34" Height="24"/>
         <TextBox x:Name="ISO" HorizontalAlignment="Left" Margin="5,35,0,0" TextWrapping="Wrap" Text="C:\Users\Admin\Desktop\dewSystems\ISO\Gandalf10PE.ISO" VerticalAlignment="Top" Width="328" Height="18"/>
         <TextBox x:Name="MountPoint" HorizontalAlignment="Left" Margin="139,64,0,0" TextWrapping="Wrap" Text="C:\MOUNT" VerticalAlignment="Top" Width="70" AutomationProperties.HelpText="test" Height="20"/>
-        <Button Content="Mount ISO" HorizontalAlignment="Left" Margin="348,35,0,0" VerticalAlignment="Top" Width="64" Click="MountISO" Height="18"/>
+        <Button Content="Mount ISO" HorizontalAlignment="Left" Margin="348,35,0,0" VerticalAlignment="Top" Width="64" Click="MountISO" Height="20"/>
         <Button Content="Mount WIM" HorizontalAlignment="Left" Margin="214,64,0,0" VerticalAlignment="Top" Width="76" Click="MountWIM" Height="20"/>
         <Button Content="Get WimInfo" HorizontalAlignment="Left" Margin="12,95,0,0" VerticalAlignment="Top" Width="96" Click="getWIMInfo" Height="20"/>
         <Button Content="Add drivers" HorizontalAlignment="Left" Margin="13,122,0,0" VerticalAlignment="Top" Width="94" Click="AddPEDrivers" Height="20"/>
