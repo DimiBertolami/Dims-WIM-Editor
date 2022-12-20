@@ -109,8 +109,6 @@ namespace DimsISOTweaker
                 MountPoint.Text+"\\*.msu /b`) do wusa "+
                 MountPoint.Text+"\\%x /quiet /norestart", 
                 false);
-            //new ReadStdOut().CreateProcess("cmd.exe",
-            //    " /c dism /image:c:\\Mount\\MOUNTDIR /Get-Packages");
             new ReadStdOut().CreateProcess("cmd.exe",
             " /c echo for /f \"usebackq\" %x in (`dir " + 
             MountPoint.Text + 
@@ -122,7 +120,6 @@ namespace DimsISOTweaker
 
         private void UnMountWIM(object sender, RoutedEventArgs e)
         {
-            // & echo to unmount wim file just execute & echo dism /unmount-wim /mountdir:c:\\Mount\\MOUNTDIR /discard (or /commit if you want to save changes)
             new ReadStdOut().CreateProcess("cmd.exe",
              " /c dism /unmount-wim /mountdir:" + 
              MountPoint.Text + 
@@ -139,7 +136,7 @@ namespace DimsISOTweaker
         {
             if (Directory.Exists("c:\\ADK")) { return; }
             new ReadStdOut().CreateProcess("cmd.exe",
-             " /c C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q", 
+             " /c Installers\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q", 
              false);
         }
 
@@ -147,7 +144,7 @@ namespace DimsISOTweaker
         {
             if(Directory.Exists("C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment")) { return; }
             new ReadStdOut().CreateProcess("cmd.exe",
-             " /c C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q", 
+             " /c Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q", 
              false);
         }
 
@@ -179,10 +176,6 @@ namespace DimsISOTweaker
                 MountPoint.Text +
                 "\\MOUNTDIR /discard",
                 false);
-
-            // dism /Cleanup-Mountpoints 
-
-
         }
 
         private void CleanUpMountPoints(object sender, RoutedEventArgs e)
@@ -210,6 +203,13 @@ namespace DimsISOTweaker
             new ReadStdOut().CreateProcess("cmd.exe",
                 " /c dism /Get-MountedWimInfo",
                 false);
+        }
+
+        private void getPackages(object sender, RoutedEventArgs e)
+        {
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /c dism /image:" + MountPoint.Text + "\\MOUNTDIR /Get-Packages", false);
+
         }
     }
 }

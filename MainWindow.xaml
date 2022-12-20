@@ -34,5 +34,6 @@
         <Button Content="Shell" HorizontalAlignment="Left" Margin="555,35,0,0" VerticalAlignment="Top" Width="36" Click="SpawnAShell" Height="23"/>
         <Button Content="add apps" HorizontalAlignment="Left" Margin="328,123,0,0" VerticalAlignment="Top" ToolTip="to add optiona apps... doesn't work though yet.." Height="20" Width="62"/>
         <Button Content="Cleanup Wim" HorizontalAlignment="Left" Margin="429,64,0,0" VerticalAlignment="Top" Width="78" Height="20" Click="CleanupWim"/>
+        <Button Content="Get-Packages" HorizontalAlignment="Left" Margin="287,95,0,0" VerticalAlignment="Top" Width="125" Height="20" Click="getPackages"/>
     </Grid>
 </Window>
