@@ -27,7 +27,7 @@
         <Button Content="Get-MountedWimInfo" HorizontalAlignment="Left" Margin="139,95,0,0" VerticalAlignment="Top" Width="125" Click="getMountedWIMInfo" Height="20"/>
         <Button x:Name="Copy_WIM" Content="Copy WIM" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="100" Click="CopyWIM" Height="20" />
         <Button Content="Dismount" HorizontalAlignment="Left" Margin="429,34,0,0" VerticalAlignment="Top" Click="dismountISO" Height="20" Width="55"/>
-        <Button Content="add cabs" HorizontalAlignment="Left" Margin="264,123,0,0" VerticalAlignment="Top" ToolTip="these are the optional winPE components..." Height="20" Width="59"/>
+        <Button Content="add cabs" HorizontalAlignment="Left" Margin="264,123,0,0" VerticalAlignment="Top" ToolTip="these are the optional winPE components..." Height="20" Width="59" Click="addCabs"/>
         <Button Content="TestMe!" HorizontalAlignment="Left" Margin="589,194,0,0" VerticalAlignment="Top" ToolTip="THIS IS MY TESTBUTTON USE AT OWN RISK!" Click="Testme" Height="20" Width="45"/>
         <Button Content="Discard" HorizontalAlignment="Left" Margin="360,64,0,0" VerticalAlignment="Top" Width="52" Height="20" Click="UnMountWIMDiscard"/>
         <Button Content="Cleanup MountPoints" HorizontalAlignment="Left" Margin="512,64,0,0" VerticalAlignment="Top" Width="122" Height="20" Click="CleanUpMountPoints"/>

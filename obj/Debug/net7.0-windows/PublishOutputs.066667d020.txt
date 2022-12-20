@@ -1,5 +1,0 @@
-C:\Users\Admin\Desktop\dewSystems\DimsISOTweaker\bin\Debug\net7.0-windows\publish\DimsISOTweaker.exe
-C:\Users\Admin\Desktop\dewSystems\DimsISOTweaker\bin\Debug\net7.0-windows\publish\DimsISOTweaker.dll
-C:\Users\Admin\Desktop\dewSystems\DimsISOTweaker\bin\Debug\net7.0-windows\publish\DimsISOTweaker.deps.json
-C:\Users\Admin\Desktop\dewSystems\DimsISOTweaker\bin\Debug\net7.0-windows\publish\DimsISOTweaker.runtimeconfig.json
-C:\Users\Admin\Desktop\dewSystems\DimsISOTweaker\bin\Debug\net7.0-windows\publish\DimsISOTweaker.pdb

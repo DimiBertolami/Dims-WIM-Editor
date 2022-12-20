@@ -137,8 +137,7 @@ namespace DimsISOTweaker
 
         private void adksetup(object sender, RoutedEventArgs e)
         {
-            //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
-            //myProcessInfo.Verb = "runas";
+            if (Directory.Exists("c:\\ADK")) { return; }
             new ReadStdOut().CreateProcess("cmd.exe",
              " /c C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q", 
              false);
@@ -146,6 +145,7 @@ namespace DimsISOTweaker
 
         private void ADKPESetup(object sender, RoutedEventArgs e)
         {
+            if(Directory.Exists("C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment")) { return; }
             new ReadStdOut().CreateProcess("cmd.exe",
              " /c C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q", 
              false);
@@ -154,7 +154,14 @@ namespace DimsISOTweaker
         private void addCabs(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
-                "/c pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\" & dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\ & cd en-us & dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\", 
+                "/c pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\" & dism /Image:" +
+                MountPoint.Text + 
+                "\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\",
+                false);
+            new ReadStdOut().CreateProcess("cmd.exe",
+                "/c pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us\" & dism /Image:" +
+                MountPoint.Text +
+                "\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us\\",
                 false);
         }
 
