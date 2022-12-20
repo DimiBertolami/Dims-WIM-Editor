@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DimsISOTweaker"
         mc:Ignorable="d"
-        Title="Dimi's PE builder" Height="250" Width="665">
+        Title="Dimi's PE builder" Height="250" Width="690">
     <Grid Margin="15,0,10,4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -20,7 +20,7 @@
         <Button Content="Get WimInfo" HorizontalAlignment="Left" Margin="12,95,0,0" VerticalAlignment="Top" Width="96" Click="getWIMInfo" Height="20"/>
         <Button Content="Add drivers" HorizontalAlignment="Left" Margin="13,122,0,0" VerticalAlignment="Top" Width="94" Click="AddPEDrivers" Height="20"/>
         <Button Content="Slipstream updates" HorizontalAlignment="Left" Margin="139,123,0,0" VerticalAlignment="Top" Click="SlipstreamKB" Height="20" Width="105"/>
-        <Button Content="UnMount WIM" HorizontalAlignment="Left" Margin="297,64,0,0" VerticalAlignment="Top" Width="92" Click="UnMountWIM" Height="20"/>
+        <Button Content="UnMount" HorizontalAlignment="Left" Margin="297,64,0,0" VerticalAlignment="Top" Width="58" Click="UnMountWIM" Height="20"/>
         <Button Content="about" HorizontalAlignment="Left" Margin="354,163,0,0" VerticalAlignment="Top" Click="about" Height="36" Width="52"/>
         <Button Content="ADK Setup" HorizontalAlignment="Left" Margin="24,166,0,0" VerticalAlignment="Top" Click="adksetup" Width="72" ToolTip="Quick silent installer for windows Assesment and Deployment Kit" Height="20"/>
         <Button Content="ADK WPE Setup" HorizontalAlignment="Left" Margin="120,166,0,0" VerticalAlignment="Top" Click="ADKPESetup" ToolTip="Quick silent installer for windows ADK PE Addon Setup" Height="20" Width="88"/>
@@ -29,5 +29,7 @@
         <Button Content="Dismount" HorizontalAlignment="Left" Margin="429,34,0,0" VerticalAlignment="Top" Click="dismountISO" Height="20" Width="55"/>
         <Button Content="add cabs" HorizontalAlignment="Left" Margin="264,123,0,0" VerticalAlignment="Top" ToolTip="these are the optional winPE components..." Height="20" Width="51"/>
         <Button Content="TestMe!" HorizontalAlignment="Left" Margin="489,115,0,0" VerticalAlignment="Top" ToolTip="THIS IS MY TESTBUTTON" Click="Testme" Height="20" Width="45"/>
+        <Button Content="Discard Changes to WIM" HorizontalAlignment="Left" Margin="360,64,0,0" VerticalAlignment="Top" Width="145" Height="20" Click="UnMountWIMDiscard"/>
+        <Button Content="Cleanup MountPoints" HorizontalAlignment="Left" Margin="512,64,0,0" VerticalAlignment="Top" Width="122" Height="20" Click="CleanUpMountPoints"/>
     </Grid>
 </Window>

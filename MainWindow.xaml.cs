@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using static System.IO.FileInfo;
 using System.IO.Enumeration;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,34 +30,46 @@ namespace DimsISOTweaker
             InitializeComponent();
         }
 
-        public void MountISO(object sender, RoutedEventArgs e)
+        private void MountISO(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe", 
-                " /c powershell -command \"Mount-DiskImage -ImagePath c:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"", 
+                " /c powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"", 
                 false);
         }
+
+        private void dismountISO(object sender, RoutedEventArgs e)
+        {
+            new ReadStdOut().CreateProcess("cmd.exe",
+                "/c powershell.exe -Command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"",
+                false);
+        }
+
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
+            // out with the old dos code
             //new ReadStdOut().CreateProcess("cmd.exe",
             //    " /c md " + MountPoint.Text +
             //    " & md C:\\Mount\\Drivers & md " + MountPoint.Text +
             //    "\\MOUNTDIR & MD " + MountPoint.Text + "\\BootWIM",
             //    false);
-            if(Directory.Exists("c:\\Mount"))
-            {
-                Directory.Delete("c:\\Mount", true); //the boolean means recursive delete = true
-            }
-            Directory.CreateDirectory("c:\\Mount\\Drivers");
-            Directory.CreateDirectory("c:\\Mount\\MOUNTPOINT");
-            Directory.CreateDirectory("c:\\Mount\\BootWIM");
+            // and in with the new code..
+                                        //the boolean means recursive delete = true
+            if (Directory.Exists(MountPoint.Text)){ Directory.Delete(MountPoint.Text, true); }
+            Directory.CreateDirectory(MountPoint.Text);
+            Directory.CreateDirectory(MountPoint.Text + "\\Drivers");
+            Directory.CreateDirectory(MountPoint.Text + "\\MOUNTDIR");
+            Directory.CreateDirectory(MountPoint.Text + "\\BootWIM");
             DriveInfo[] drives = DriveInfo.GetDrives();
             for (int i = 0; i < drives.Count(); i++)
             {
                 if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
                 {
-                    File.Copy(drives[i].Name + "Sources\\boot.wim", 
+                    var FileHandle = File.OpenHandle(MountPoint.Text + "\\BootWIM\\boot.wim");
+                         File.Copy(drives[i].Name + "Sources\\boot.wim", 
                         MountPoint.Text + "\\BootWIM\\boot.wim", 
                         true);
+                    FileInfo fileInfo = new FileInfo(MountPoint.Text + "\\BootWIM\boot.wim");
+                    if (fileInfo.IsReadOnly) { fileInfo.IsReadOnly= false; }
                 }
             }
         }
@@ -142,13 +156,6 @@ namespace DimsISOTweaker
              false);
         }
 
-        private void dismountISO(object sender, RoutedEventArgs e)
-        {
-            new ReadStdOut().CreateProcess("cmd.exe",
-                "/c powershell.exe -Command \"Dismount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"", 
-                false);
-        }
-
         private void addCabs(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("cmd.exe",
@@ -163,6 +170,25 @@ namespace DimsISOTweaker
                 false);
         }
 
+        private void UnMountWIMDiscard(object sender, RoutedEventArgs e)
+        {
+            new ReadStdOut().CreateProcess("cmd.exe",
+                 " /c dism /unmount-wim /mountdir:" +
+                MountPoint.Text +
+                "\\MOUNTDIR /discard",
+                false);
+
+            // dism /Cleanup-Mountpoints 
+
+
+        }
+
+        private void CleanUpMountPoints(object sender, RoutedEventArgs e)
+        {
+            new ReadStdOut().CreateProcess("cmd.exe",
+                 " /c dism /Cleanup-Mountpoints",
+                false); 
+        }
     }
 }
 
