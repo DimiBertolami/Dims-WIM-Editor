@@ -75,8 +75,8 @@ namespace DimsISOTweaker
         }
         public void getWIMInfo(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess("cmd.exe", 
-                " /c dism /Get-MountedWimInfo", 
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /c DISM.exe /Get-WimInfo /WimFile:" + MountPoint.Text + "\\BootWIM\\boot.wim", 
                 false);
         }
         public void MountWIM(object sender, RoutedEventArgs e)
@@ -128,11 +128,6 @@ namespace DimsISOTweaker
              MountPoint.Text + 
              "\\MOUNTDIR /commit", 
              false);
-
-            // dism /Cleanup-Mountpoints 
-            // dism / get - mountedwiminfo
-
-
         }
 
         private void about(object sender, RoutedEventArgs e)
@@ -188,6 +183,26 @@ namespace DimsISOTweaker
             new ReadStdOut().CreateProcess("cmd.exe",
                  " /c dism /Cleanup-Mountpoints",
                 false); 
+        }
+
+        private void SpawnAShell(object sender, RoutedEventArgs e)
+            // it's Spawn - A - Shell .. not Spawn as Hell !
+        {
+            System.Diagnostics.Process.Start("cmd.exe", " /k title Dims Dosbox & color 9e");
+        }
+
+        private void CleanupWim(object sender, RoutedEventArgs e)
+        {
+            new ReadStdOut().CreateProcess("cmd.exe",
+                 " /c dism /Cleanup-Wim",
+                false);
+        }
+
+        private void getMountedWIMInfo(object sender, RoutedEventArgs e)
+        {
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /c dism /Get-MountedWimInfo",
+                false);
         }
     }
 }
