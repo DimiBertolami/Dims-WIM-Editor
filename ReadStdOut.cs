@@ -20,15 +20,13 @@ namespace DimsISOTweaker
             MessageBox.Show(binaryExecutable + " " + args, " * ", MessageBoxButton.OK, MessageBoxImage.Information);
             Process process = new Process();
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = binaryExecutable,
-                    Arguments = args,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                };
+                StartInfo = new ProcessStartInfo{ };
             }
+            process.StartInfo.FileName = binaryExecutable;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
 
             process.Start();
             {

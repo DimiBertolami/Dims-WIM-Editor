@@ -34,37 +34,30 @@ namespace DimsISOTweaker
         }
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
-            //DriveInfo[] drives = DriveInfo.GetDrives();
-            //for (int i = 0; i < drives.Count(); i++)
-            //{
-            //    if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
-            //    {
-            //        System.Diagnostics.Process.Start("cmd.exe", "/k MODE CON cols=80 LINES=6 & xcopy /e /z " + drives[i].Name + "Sources\\boot.wim " + MountPoint.Text + "\\BootWIM");
-            //    }
-            //}
-
-            System.Diagnostics.Process.Start("cmd.exe", 
-                " /c echo off & FOR /D %x in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\\sources\\boot.wim (xcopy /e /z %x:\\sources\\boot.wim "+ MountPoint.Text + "\\BootWIM)");
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            for (int i = 0; i < drives.Count(); i++)
+            {
+                if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
+                {
+                    File.Copy(drives[i].Name + "Sources\\boot.wim", MountPoint.Text + "\\BootWIM\\boot.wim", true);
+                }
+            }
         }
         public void getWIMInfo(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("cmd.exe",
-                    " /k dism /Get-MountedWimInfo");
+            new ReadStdOut().CreateProcess("cmd.exe", " /c dism /Get-MountedWimInfo");
         }
         public void MountWIM(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("cmd.exe",
-            " /c MODE CON cols=80 LINES=6 & md " + MountPoint.Text + " & md C:\\Mount\\Drivers & md " + MountPoint.Text + "\\MOUNTDIR & MD " + MountPoint.Text + "\\BootWIM");
-            //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
-            //myProcessInfo.Verb = "runas";
-            System.Diagnostics.Process.Start("cmd.exe",
-             " /c MODE CON cols=80 LINES=6 & DISM /mount-wim /wimfile:" + MountPoint.Text + "\\BootWIM\\boot.wim /index:1 /MountDir:"+ MountPoint.Text + "\\MOUNTDIR");
-
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /c md " + MountPoint.Text + " & md C:\\Mount\\Drivers & md " + MountPoint.Text + "\\MOUNTDIR & MD " + MountPoint.Text + "\\BootWIM");
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /c DISM /mount-wim /wimfile:" + MountPoint.Text + "\\BootWIM\\boot.wim /index:1 /MountDir:" + MountPoint.Text + "\\MOUNTDIR");
         }
         public void AddPEDrivers(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("cmd.exe",
-                " /k MODE CON cols=80 LINES=6 & dism /image:"+ MountPoint.Text + "\\MOUNTDIR /Add-Driver /Driver:"+ MountPoint.Text + "\\Drivers /recurse");
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /c MODE CON cols=80 LINES=6 & dism /image:"+ MountPoint.Text + "\\MOUNTDIR /Add-Driver /Driver:"+ MountPoint.Text + "\\Drivers /recurse");
         }
         void SlipstreamKB(object sender, RoutedEventArgs e)
         {
@@ -73,14 +66,12 @@ namespace DimsISOTweaker
             // Just make sure you write down which KB-Nrs.msu's you install. then download the correct
             // update file from https://www.catalog.update.microsoft.com/home.aspx and slipstream it into
             // your installation source like i did here.. 
-            System.Diagnostics.Process.Start("cmd.exe",
-                " /k MODE CON cols=80 LINES=6 & for /f \"usebackq\" %x in (`dir "+MountPoint.Text+"\\*.msu /b`) do wusa "+MountPoint.Text+"\\%x /quiet /norestart");
-            //System.Diagnostics.Process.Start("cmd.exe",
-            //    " /k MODE CON cols=80 LINES=6 & dism /image:c:\\Mount\\MOUNTDIR /Get-Packages");
-            System.Diagnostics.Process.Start("cmd.exe",
-                " /k MODE CON cols=80 LINES=6 & echo for /f \"usebackq\" %x in (`dir "+ MountPoint.Text + "\\*.msu /b`) do dism /Image:"+ MountPoint.Text + "\\MOUNTDIR /Add-Package /PackagePath=%x");
-            // alternatively you can also execute this command: systeminfo32 and copy the list of
-            // knowledgebase articles or hotfixes
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /c for /f \"usebackq\" %x in (`dir " + MountPoint.Text+"\\*.msu /b`) do wusa "+MountPoint.Text+"\\%x /quiet /norestart");
+            //new ReadStdOut().CreateProcess("cmd.exe",
+            //    " /c dism /image:c:\\Mount\\MOUNTDIR /Get-Packages");
+            new ReadStdOut().CreateProcess("cmd.exe",
+            " /c echo for /f \"usebackq\" %x in (`dir " + MountPoint.Text + "\\*.msu /b`) do dism /Image:"+ MountPoint.Text + "\\MOUNTDIR /Add-Package /PackagePath=%x");
         }
 
         private void UnMountWIM(object sender, RoutedEventArgs e)
@@ -88,8 +79,8 @@ namespace DimsISOTweaker
             // & echo to unmount wim file just execute & echo dism /unmount-wim /mountdir:c:\\Mount\\MOUNTDIR /discard (or /commit if you want to save changes)
             //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
             //myProcessInfo.Verb = "runas";
-            System.Diagnostics.Process.Start("cmd.exe",
-             " /c MODE CON cols=80 LINES=6 & dism /unmount-wim /mountdir:"+ MountPoint.Text + "\\MOUNTDIR /commit");
+            new ReadStdOut().CreateProcess("cmd.exe",
+             " /c dism /unmount-wim /mountdir:" + MountPoint.Text + "\\MOUNTDIR /commit");
 
             // dism /Cleanup-Mountpoints 
             // dism / get - mountedwiminfo
@@ -104,79 +95,36 @@ namespace DimsISOTweaker
 
         private void adksetup(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
-            myProcessInfo.Verb = "runas";
-            System.Diagnostics.Process.Start("cmd.exe",
+            //System.Diagnostics.ProcessStartInfo myProcessInfo = new System.Diagnostics.ProcessStartInfo();
+            //myProcessInfo.Verb = "runas";
+            new ReadStdOut().CreateProcess("cmd.exe",
              " /k MODE CON cols=80 LINES=6 & C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
         }
 
         private void ADKPESetup(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("cmd.exe",
+            new ReadStdOut().CreateProcess("cmd.exe",
              " /k MODE CON cols=80 LINES=6 & C:\\Users\\Admin\\source\\repos\\DimsISOTweaker\\Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q");
         }
 
         private void dismountISO(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("cmd.exe", "/c powershell.exe -Command \"Dismount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
+            new ReadStdOut().CreateProcess("cmd.exe",
+                "/c powershell.exe -Command \"Dismount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"");
 
         }
 
         private void addCabs(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("cmd.exe",
+            new ReadStdOut().CreateProcess("cmd.exe",
                 "/k pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\" & ECHO dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\ & cd en-us & ECHO dism /Image:c:\\mount\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\");
         }
 
         private void Testme(object sender, RoutedEventArgs e)
         {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = " /k echo baaye baaye koeievlaai!",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                }
-            };
-            process.Start();
-            {
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    //line.SkipWhile<char>(char.IsWhiteSpace);
-                    MessageBox.Show(line);
-                }
-            }
+            new ReadStdOut().CreateProcess("cmd.exe",
+                " /k echo baaye baaye koeievlaai!");
         }
-
-        private void readStandardOutput(object sender, RoutedEventArgs e)
-        {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = " /k echo baaye baaye koeievlaai!",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                }
-            };
-            process.Start();
-            {
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    //line.SkipWhile<char>(char.IsWhiteSpace);
-                    MessageBox.Show(line);
-                }
-            }
-        }
-
-
 
     }
 }
