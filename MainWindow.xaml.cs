@@ -64,12 +64,11 @@ namespace DimsISOTweaker
             {
                 if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
                 {
-                    var FileHandle = File.OpenHandle(MountPoint.Text + "\\BootWIM\\boot.wim");
-                         File.Copy(drives[i].Name + "Sources\\boot.wim", 
-                        MountPoint.Text + "\\BootWIM\\boot.wim", 
-                        true);
+                    //var FileHandle = File.OpenHandle(MountPoint.Text + "\\BootWIM\\boot.wim");
+                    File.Copy(drives[i].Name + "Sources\\boot.wim", 
+                            MountPoint.Text + "\\BootWIM\\boot.wim", true);
                     FileInfo fileInfo = new FileInfo(MountPoint.Text + "\\BootWIM\boot.wim");
-                    if (fileInfo.IsReadOnly) { fileInfo.IsReadOnly= false; }
+                    if (fileInfo.IsReadOnly) { fileInfo.IsReadOnly = false; };
                 }
             }
         }
@@ -84,7 +83,7 @@ namespace DimsISOTweaker
             new ReadStdOut().CreateProcess("cmd.exe",
                 " /c DISM /mount-wim /wimfile:" + MountPoint.Text + 
                 "\\BootWIM\\boot.wim /index:" + Index.Text + 
-                " / MountDir:" + MountPoint.Text + 
+                " /MountDir:" + MountPoint.Text + 
                 "\\MOUNTDIR", true);
         }
         public void AddPEDrivers(object sender, RoutedEventArgs e)
