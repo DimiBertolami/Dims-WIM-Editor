@@ -47,11 +47,9 @@ dism /Image:c:\mount\MOUNTDIR /Add-Package /PackagePath:"C:\ADK\Assessment and D
 :: set scratchspace to maximum allowed
 Dism /Set-ScratchSpace:512 /Image:c:\mount\MOUNTDIR
 
-:: download necessary updates manually
+:: download necessary kb updates manually from https://www.catalog.update.microsoft.com/Home.aspx (preferably cumulative updates)
 :: slipstream downloaded windows updates into your mounted virtual disk
 Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath=kb4456655.msu
-OR ( for /f "usebackq" %x in (`dir *.msu /b`) do %x )
-or ( for /f "usebackq" %x in (`dir *.msu /b`) do start /b /wait %x /log:updates.log)
 
 :: remounting in different folder this time.. 
 pushd "C:\ADK\Assessment and Deployment Kit\Windows Preinstallation Environment"
