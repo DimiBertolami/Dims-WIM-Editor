@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="Dimi's PE builder" 
         Height="260" 
-        Width="700"
+        Width="710"
         ResizeMode="NoResize">
-    <Grid Margin="15,0,10,4">
+    <Grid Margin="15,0,10,4" ContextMenuClosing="cleanResetBase">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -36,5 +36,15 @@
         <Button x:Name="WimInfo" Content="WimInfo" HorizontalAlignment="Left" VerticalAlignment="Top" Width="51" Click="getWIMInfo" Height="20" Margin="310,74,0,0"/>
         <Button Content="MountedWimInfo" HorizontalAlignment="Left" Margin="366,74,0,0" VerticalAlignment="Top" Width="99" Click="getMountedWIMInfo" Height="20"/>
         <Button Content="Get-Packages" HorizontalAlignment="Left" Margin="470,74,0,0" VerticalAlignment="Top" Width="95" Height="20" Click="getPackages"/>
+        <Button Content="Clean IMG" HorizontalAlignment="Left" Margin="481,105,0,0" VerticalAlignment="Top" Width="84" Height="20" Click="CleanupIMG"/>
+        <Button Content="MountWIM" HorizontalAlignment="Left" Margin="25,164,0,0" VerticalAlignment="Top" Width="75" ToolTip="Mount ADK Boot.wim" Height="20" Click="adkMountWIM"/>
+        <Button Content="CopyPE" HorizontalAlignment="Left" Margin="105,164,0,0" VerticalAlignment="Top" Width="46" ToolTip="Copy ADK boot.wim" Height="20" Click="adkCopyPE"/>
+        <Button Content="V-OS WIM" HorizontalAlignment="Left" Margin="156,164,0,0" VerticalAlignment="Top" Click="vOS" ToolTip="ValidationOS"/>
+        <Button Content="Cabs(adk)" HorizontalAlignment="Left" Margin="221,164,0,0" VerticalAlignment="Top" Click="AddCabz" Width="57"/>
+        <Button Content="get-Packages" HorizontalAlignment="Left" Margin="286,164,0,0" VerticalAlignment="Top" Click="getADKPackages" />
+        <!--<Button Content="cleanWIMresetBase" IsEnabled="False" HorizontalAlignment="Left" Margin="25,189,0,0" VerticalAlignment="Top" ToolTip="cleanup wim and resetbase" Height="20" Click="cleanResetBase" />-->
+        <Button Content="UnmountWIM" HorizontalAlignment="Left" Margin="150,189,0,0" VerticalAlignment="Top" Click="UnmountWIMAdk"/>
+        <Button Content="ExportWIM" HorizontalAlignment="Left" Margin="234,189,0,0" VerticalAlignment="Top" Click="ExportWIMAdk"/>
+        <Button Content="ADK WIMINFO" HorizontalAlignment="Left" Margin="366,164,0,0" VerticalAlignment="Top" Click="getADKWIMNFO" />
     </Grid>
 </Window>
