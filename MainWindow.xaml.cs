@@ -22,6 +22,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Drawing;
 using System.IO.Packaging;
 using CmdApp;
+using System.Windows.Controls.Primitives;
 
 namespace DimsISOTweaker
 {
@@ -31,52 +32,46 @@ namespace DimsISOTweaker
     public partial class MainWindow : Window
     {
         private const string StandardArguments = "cmd /k color 9e & title WIM-Editor & echo off";
+        private object val;
 
-        public int tmpPID { get; set; } = 0;
-        public void mainWindow(string CMDArgument)
+        public int ID { get; set; } = 0;
+        public MainWindow()
         {
-            //object Messagebox = null;
-            Console.WriteLine("cmd (" + this.tmpPID + ") ");
-            string tmpCMD = StandardArguments;
-            var cmdSVC = new CmdService(tmpPID, "C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment");
-            cmdSVC.ExecuteCommand("cmd.exe");
-            cmdSVC.ExecuteCommand($"{tmpCMD} = {CMDArgument}");
-            //Process.CreateProcess(" /c echo test" + tmpCMD);
             InitializeComponent();
         }
 
-        private void MountISO(object sender, RoutedEventArgs e)
+        public void MountISO(object sender, RoutedEventArgs e)
         {
-            //if(Global.PID != 0)
-            //{
-            //    PS.WriteToProcessById(PID, "echo blaahblaah");
-            //}
-
-            
-            //Process.GetProcessById(PID).StandardInput.WriteLine();
-            //var cmd = new PS(" /k color 9e");
-            //cmd.Create("echo hello world!");
-            //PS.WriteToProcessById(PID, "whoohoow i'm a goorooh");
-            
-            new ReadStdOut().CreateProcess(" /c powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+            int PID = Global.PID;
+            if (PID == 0)
+            {
+                PID = new ReadStdOut().CreateProcess(" /c powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+            }
+            else
+            {
+                Process x = Process.GetProcessById(PID);
+                x.StandardInput.WriteLine(" /c powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+            }
         }
 
-        private void dismountISO(object sender, RoutedEventArgs e)
+        public void DismountISO(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess("/c powershell.exe -Command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"");
+            int PID = Global.PID;
+            if (PID == 0)
+            {
+                PID = new ReadStdOut().CreateProcess("/c powershell.exe -Command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"");
+            }
+            else
+            {
+                Process x = Process.GetProcessById(PID);
+                x.StandardInput.WriteLine($" /c powershell -command \"Dismount-DiskImage -ImagePath {ISO.Text}\"");
+            }
         }
 
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
-            // out with the old dos code
-            //new ReadStdOut().CreateProcess("cmd.exe",
-            //    " /c md " + MountPoint.Text +
-            //    " & md C:\\Mount\\Drivers & md " + MountPoint.Text +
-            //    "\\MOUNTDIR & MD " + MountPoint.Text + "\\BootWIM",
-            //    false);
-            // and in with the new code..
-                                        //the boolean means recursive delete = true
-            if (Directory.Exists(MountPoint.Text)){ Directory.Delete(MountPoint.Text, true); }
+            //the boolean means recursive delete
+            if (Directory.Exists(MountPoint.Text)) { Directory.Delete(MountPoint.Text, true); }
             Directory.CreateDirectory(MountPoint.Text);
             Directory.CreateDirectory(MountPoint.Text + "\\Drivers");
             Directory.CreateDirectory(MountPoint.Text + "\\MOUNTDIR");
@@ -87,7 +82,7 @@ namespace DimsISOTweaker
                 if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
                 {
                     //var FileHandle = File.OpenHandle(MountPoint.Text + "\\BootWIM\\boot.wim");
-                    File.Copy(drives[i].Name + "Sources\\boot.wim", 
+                    File.Copy(drives[i].Name + "Sources\\boot.wim",
                             MountPoint.Text + "\\BootWIM\\boot.wim", true);
                     FileInfo fileInfo = new FileInfo(MountPoint.Text + "\\BootWIM\boot.wim");
                     if (fileInfo.IsReadOnly) { fileInfo.IsReadOnly = false; };
@@ -100,15 +95,15 @@ namespace DimsISOTweaker
         }
         public void MountWIM(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess(" /c DISM /mount-wim /wimfile:" + MountPoint.Text + 
-                "\\BootWIM\\boot.wim /index:" + Index.Text + 
-                " /MountDir:" + MountPoint.Text + 
+            new ReadStdOut().CreateProcess(" /c DISM /mount-wim /wimfile:" + MountPoint.Text +
+                "\\BootWIM\\boot.wim /index:" + Index.Text +
+                " /MountDir:" + MountPoint.Text +
                 "\\MOUNTDIR");
         }
         public void AddPEDrivers(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess(" /c dism /image:"+ MountPoint.Text + 
-                "\\MOUNTDIR /Add-Driver /Driver:" + MountPoint.Text + 
+            new ReadStdOut().CreateProcess(" /c dism /image:" + MountPoint.Text +
+                "\\MOUNTDIR /Add-Driver /Driver:" + MountPoint.Text +
                 "\\Drivers /recurse");
         }
         void SlipstreamKB(object sender, RoutedEventArgs e)
@@ -118,20 +113,20 @@ namespace DimsISOTweaker
             // Just make sure you write down which KB-Nrs.msu's you install. then download the correct
             // update file from https://www.catalog.update.microsoft.com/home.aspx and slipstream it into
             // your installation source like i did here.. 
-            new ReadStdOut().CreateProcess(" /c for /f \"usebackq\" %x in (`dir " + 
-                MountPoint.Text+"\\*.msu /b`) do wusa "+
-                MountPoint.Text+"\\%x /quiet /norestart");
-            new ReadStdOut().CreateProcess(" /c echo for /f \"usebackq\" %x in (`dir " + 
-            MountPoint.Text + 
-            "\\*.msu /b`) do dism /Image:" + 
-            MountPoint.Text + 
+            new ReadStdOut().CreateProcess(" /c for /f \"usebackq\" %x in (`dir " +
+                MountPoint.Text + "\\*.msu /b`) do wusa " +
+                MountPoint.Text + "\\%x /quiet /norestart");
+            new ReadStdOut().CreateProcess(" /c echo for /f \"usebackq\" %x in (`dir " +
+            MountPoint.Text +
+            "\\*.msu /b`) do dism /Image:" +
+            MountPoint.Text +
             "\\MOUNTDIR /Add-Package /PackagePath=%x");
         }
 
         private void UnMountWIM(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess(" /c dism /unmount-wim /mountdir:" + 
-             MountPoint.Text + 
+            new ReadStdOut().CreateProcess(" /c dism /unmount-wim /mountdir:" +
+             MountPoint.Text +
              "\\MOUNTDIR /commit");
         }
 
@@ -143,7 +138,7 @@ namespace DimsISOTweaker
         private void addCabs(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess("/c pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\" & dism /Image:" +
-                MountPoint.Text + 
+                MountPoint.Text +
                 "\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\");
             new ReadStdOut().CreateProcess("/c pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us\" & dism /Image:" +
                 MountPoint.Text +
@@ -159,24 +154,25 @@ namespace DimsISOTweaker
 
         private void CleanUpMountPoints(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess(" /c dism /Cleanup-Mountpoints"); 
+            new ReadStdOut().CreateProcess(" /c dism /Cleanup-Mountpoints");
         }
 
         private void SpawnAShell(object sender, RoutedEventArgs e)
-            // it's Spawn - A - Shell .. not Spawn as Hell !
+        // it's Spawn - A - Shell .. not Spawn as Hell !
         {
-            int PID = new PS(" /k color 9e").Create("echo hello world!");
-
-            //MessageBox.Show("PID : "+pid);
+            int PID = Global.PID;
+            //new PS().Create("echo hello world!");
             var cmdStartInfo = new ProcessStartInfo() { };
-            cmdStartInfo.RedirectStandardInput= true;
+            cmdStartInfo.RedirectStandardInput = true;
             cmdStartInfo.CreateNoWindow = false;
-            cmdStartInfo.UseShellExecute= false;
+            cmdStartInfo.UseShellExecute = false;
             cmdStartInfo.FileName = "cmd.exe";
             cmdStartInfo.Arguments = " /k color 9e";
             cmdStartInfo.WindowStyle = ProcessWindowStyle.Maximized;
             cmdStartInfo.WorkingDirectory = MountPoint.Text;
-            var cmdProcess = Process.Start(cmdStartInfo);
+            var cmdProcess = new Process();
+            cmdProcess.Start();
+
             PID = cmdProcess.Id;
             cmdProcess.StandardInput.WriteLine("echo dit is een test!");
         }
@@ -272,14 +268,24 @@ namespace DimsISOTweaker
             new ReadStdOut().CreateProcess("DISM /GET-WIMINFO /WIMFILE:C:\\PE%processor_architecture%\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:1");
         }
 
-        private void UnmountAdkIMG(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void CreateIso(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess(" /k pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /ISO C:\\AMDimPE c:\\users\\admin\\Desktop\\AMDPE64.iso");
+        }
+
+        private void CreateBootableUsb(object sender, RoutedEventArgs e)
+        {
+            new ReadStdOut().CreateProcess("install dotnet setup");
+        }
+
+        private void UnmountAdkIMG(object sender, RoutedEventArgs e)
+        {
+            //
+        }
+
+        private void CreateBootableISO(object sender, RoutedEventArgs e)
+        {
+            //
         }
     }
 }
