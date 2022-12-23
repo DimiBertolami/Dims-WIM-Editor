@@ -14,10 +14,13 @@ namespace DimsISOTweaker
     public class ReadStdOut : Process
     {
         public string binaryExecutable { get; set; } = "cmd.exe";
+        bool RedirectStdIn { get; set; } = true;
         public int PID { get; set; } = 0;
         public string args { get; set; } = " /k echo hello world!";
+        public bool RedirectStandardInput { get; private set; }
+
         //public bool bAdmin { get; set; }
-        public int readStdOut(string binaryExecutable = "cmd.exe")
+        public int readStdOut(string binaryExecutable = "cmd.exe", bool RedirectStdIn = true)
         {
             this.binaryExecutable = binaryExecutable;
             Process ps = new Process();
@@ -33,78 +36,47 @@ namespace DimsISOTweaker
             return Global.PID;
         }
 
-        public void getPID(int PID, string args)
-        {
-            //process.StartInfo.FileName = binaryExecutable;
-            if (PID == 0)
-            {
-                MessageBox.Show(this.StartInfo.FileName + " " + this.StartInfo.Arguments); 
-                this.StartInfo.FileName = "cmd.exe"; //CreateProcess(binaryExecutable, " /c echo test 123 test");
-                this.StartInfo.Arguments = " /k echo hello Dimi" +args;
-                ExitCode.Equals(666);   //process is created exitcode 666
-            } else
-            {
-                Process x = Process.GetProcessById(PID);
-                x.StandardInput.WriteLine("test test test");
-                ExitCode.Equals(667);   //process was already running exitcode 667
-            }
-        }
-            //process.StartInfo.Arguments = " /c echo test 123 test";
-            //process.StartInfo.UseShellExecute = false;
-            //process.StartInfo.RedirectStandardInput = true;
-            //process.StartInfo.CreateNoWindow = false;
-            //process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-            //process.Start();
-            //process.WaitForExit();
-            //{
-            //    var line = string.Empty;
-            //    while (!process.StandardOutput.EndOfStream)
-            //    {
-            //        line = process.StandardOutput.ReadToEnd();
-            //    }
-            //    MessageBox.Show( line );
-            //}
-        //}
-        public int CreateProcess(string args) //, bool bAdmin
+        public int CreateProcess(string args, bool RedirectStandardInput = true, string binaryExecutable = "cmd.exe")
         {
             Console.WriteLine("Process Starting...");
             Process process = new Process();
-            process.StartInfo.FileName = binaryExecutable;
+            process.StartInfo.FileName = this.binaryExecutable;
             process.StartInfo.Arguments = args;
             process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardInput = true;
+            process.StartInfo.RedirectStandardInput = RedirectStandardInput;
             process.StartInfo.CreateNoWindow = false;
             process.StartInfo.WindowStyle= ProcessWindowStyle.Maximized;
             process.Start();
-            PID = process.Id;
-            process.StandardInput.WriteLine(binaryExecutable + args);
+            Global.PID = process.Id;
+            process.StandardInput.WriteLine(binaryExecutable + "\n" + 
+                args);
             process.WaitForExit();
-            return PID;
+            return Global.PID;
         }
-        public void CreateCMD(List<string> cmds, string workingDirectory = "")
+
+        internal void CreateCommandOnPid(int pID, string args, bool RedirectStandardInput = true)
         {
+            Global.PID = PID;
+            if (PID == 0)
+            {
+                this.CreateProcess(" /k color 7c & title Wim-Editor & echo off & pushd c:\\AMDimPe\\", RedirectStandardInput = true);
+            }
+            else
+            {
+                var x = new ReadStdOut();
+                x.CreateCommandOnPid(PID, "color 7c & title Wim-Editor & echo off & pushd c:\\AMDimPe\\", RedirectStandardInput = true);
+
+            }
             var process = new Process();
             var psi = new ProcessStartInfo();
             psi.FileName = "cmd.exe";
-            psi.RedirectStandardOutput = false;
-            psi.RedirectStandardError = false;
-            psi.RedirectStandardInput = false;
+            psi.RedirectStandardInput = true;
             psi.UseShellExecute = false;
             psi.WorkingDirectory = "c:\\Mount";
-            process.StartInfo= psi;
+            process.StartInfo = psi;
             process.Start();
-            process.StandardInput.WriteLine("echo hello shitbag!");
-
-            //cmdStartInfo.RedirectStandardOutput = true;
-            //cmdStartInfo.RedirectStandardError = true;
-            //cmdStartInfo.RedirectStandardInput = true;
-            //cmdStartInfo.CreateNoWindow = false;
-            //cmdStartInfo.UseShellExecute = true;
-            //cmdStartInfo.FileName = "cmd.exe";
-            //cmdStartInfo.Arguments = arg;
-            //cmdStartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-            //cmdStartInfo.WorkingDirectory = "c:\\Mount";
-            //var cmdProcess = Process.Start(cmdStartInfo);
+            process.StandardInput.WriteLine("echo hello test!");
+            psi.RedirectStandardInput = false;
         }
     }
 }

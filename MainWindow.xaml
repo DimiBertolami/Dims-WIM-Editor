@@ -61,7 +61,7 @@
         <Button Content="Install ADK PE" HorizontalAlignment="Left" Margin="15,45,0,0" VerticalAlignment="Top" Click="ADKPESetup" ToolTip="Quick silent installer for windows ADK PE Addon Setup" Height="20" Width="80" Grid.Row="2"/>
         <Button x:Name="Help" Content="Help" HorizontalAlignment="Left" Margin="625,17,0,0" VerticalAlignment="Top" Click="about" Height="20" Width="36" ToolTip="Software by D. Bertolami" Background="#FFF14040" Foreground="#FFDCCD42" FontWeight="Bold"/>
         <Button Content="Shell" HorizontalAlignment="Left" VerticalAlignment="Top" Width="36" Click="SpawnAShell" Height="20" Margin="625,44,0,0" ToolTip="open up a unique instance of my cmd prompt and redirect my cmds in there.." Background="#FF1A42DF" Foreground="#FFE8F316" FontWeight="Bold"/>
-        <Button Content="mount" HorizontalAlignment="Left" Margin="353,17,0,0" VerticalAlignment="Top" Click="MountISO" Height="47" Width="57" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9"/>
+        <Button Content="mount" HorizontalAlignment="Left" Margin="343,21,0,0" VerticalAlignment="Top" Click="MountISO" Height="37" Width="57" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9"/>
         <Button Content="Add drivers" HorizontalAlignment="Left" Margin="436,21,0,0" VerticalAlignment="Top" Width="106" Click="AddPEDrivers" Height="24" Grid.Row="2"/>
         <Button Content="Slipstream updates" HorizontalAlignment="Left" Margin="436,60,0,0" VerticalAlignment="Top" Click="SlipstreamKB" Height="20" Width="108" Grid.Row="2"/>
         <Button Content="add cabs" HorizontalAlignment="Left" Margin="436,97,0,0" VerticalAlignment="Top" ToolTip="these are the optional winPE components..." Height="20" Width="60" Click="addCabs" Grid.Row="2"/>
@@ -76,8 +76,8 @@
         <Button Content="Optional Cabs" HorizontalAlignment="Left" Margin="162,74,0,0" VerticalAlignment="Top" Click="AddCabz" Width="92" Height="18" Grid.Row="2"/>
         <Button Content="get-Packages" HorizontalAlignment="Left" Margin="162,0,0,0" VerticalAlignment="Center" Click="getADKPackages" Width="92" Height="21" Grid.Row="2" />
         <StatusBar Margin="0,209,0,0" Grid.Row="2"/>
-        <Button Content="dismount" HorizontalAlignment="Left" Margin="423,17,0,0" VerticalAlignment="Top" Click="DismountISO" Height="47" Width="73" ToolTip="dismount virtual disk (virtual eject)" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9"/>
-        <Button Content="ISO" HorizontalAlignment="Left" Margin="502,17,0,0" VerticalAlignment="Top" Click="CreateBootableISO" Height="47" Width="49" RenderTransformOrigin="0.5,0.5" ToolTip="Create a bootable WindowsPE ISO for use in network boot, usb boot, AIOboot ..." Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9">
+        <Button Content="dismount" HorizontalAlignment="Left" Margin="405,21,0,0" VerticalAlignment="Top" Click="DismountISO" Height="37" Width="73" ToolTip="dismount virtual disk (virtual eject)" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9"/>
+        <Button Content="ISO" HorizontalAlignment="Left" Margin="487,22,0,0" VerticalAlignment="Top" Click="CreateBootableISO" Height="36" Width="49" RenderTransformOrigin="0.5,0.5" ToolTip="Create a bootable WindowsPE ISO for use in network boot, usb boot, AIOboot ..." Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -87,7 +87,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Button Content="USB" HorizontalAlignment="Left" Margin="558,17,0,0" VerticalAlignment="Top" Click="CreateBootableUsb" ToolTip="Create bootable USB disk from my customised sources. " Height="47" Width="54" RenderTransformOrigin="0.5,0.5" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9">
+        <Button Content="USB" HorizontalAlignment="Left" Margin="543,22,0,0" VerticalAlignment="Top" Click="CreateBootableUsb" ToolTip="Create bootable USB disk from my customised sources. " Height="36" Width="39" RenderTransformOrigin="0.5,0.5" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -105,5 +105,10 @@
                 <ImageBrush/>
             </StatusBar.Foreground>
         </StatusBar>
+        <TextBox x:Name="usb" Margin="585,25,75,0" TextWrapping="Wrap" Text="d:" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="29" ToolTip="WIM Index (from wiminfo))!" Background="#FF1A62AC" Foreground="#FFE3D22B" FontWeight="Bold" FontSize="16" BorderThickness="0,0,0,0" >
+            <TextBox.Effect>
+                <DropShadowEffect/>
+            </TextBox.Effect>
+        </TextBox>
     </Grid>
 </Window>
