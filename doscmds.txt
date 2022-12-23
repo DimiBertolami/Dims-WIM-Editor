@@ -1,5 +1,6 @@
 how to update windows 10 ISO/Wim
 
+
 topics:
 - extra drivers
 - slipstream microsoft kb-updates
@@ -60,3 +61,16 @@ Dism /unmount-Wim /MountDir:c:\Mount\pe\mount /Commit
 
 :: make ADK WinPE ISO from boot.wim
 MakeWinPEMedia.cmd /iso C:\mount\pe C:\mount\dimpe.iso
+
+
+:: export drivers from the running windows OS
+DISM.exe /Online /Export-Driver /Destination:c:\ADK\DRIVERS
+
+:: import drivers into your mounted WIM
+DISM.exe /image:C:\AMDimPE\mount /Add-Driver /driver:c:\ADK\DRIVERS /recurse
+
+:: problems unmounting expanded WIM.. 
+:: Cleanup image
+dism /image:C:\AMDimPE\mount /Cleanup-Image /StartComponentCleanup /ResetBase /AnalyzeComponentStore
+dism /Unmount-Wim /MountDir:C:\AMDimPE\mount /commit
+

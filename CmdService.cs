@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using DimsISOTweaker;
 
 namespace CmdApp
 {
@@ -15,29 +16,40 @@ namespace CmdApp
         private StreamWriter _streamWriter;
         private AutoResetEvent _outputWaitHandle;
         private string _cmdOutput;
-
-        public CmdService(string cmdPath)
+        public int ProcessID { get; private set; } = 0;
+        public CmdService(int ProcessID, string cmdPath)
         {
-            _cmdProcess = new Process();
-            _outputWaitHandle = new AutoResetEvent(false);
-            _cmdOutput = String.Empty;
+            if(ProcessID != 0)
+            {
+                //process was already running
+                this.getProcessById(ProcessID).StandardInput.WriteLine(cmdPath);
+            } else
+            {
+                //create process
+                _cmdProcess = new Process();
+                _outputWaitHandle = new AutoResetEvent(false);
+                _cmdOutput = String.Empty;
 
-            ProcessStartInfo processStartInfo = new ProcessStartInfo();
-            processStartInfo.FileName = cmdPath;
-            processStartInfo.UseShellExecute = false;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardInput = true;
-            processStartInfo.CreateNoWindow = true;
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.FileName = cmdPath;
+                psi.UseShellExecute = false;
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardInput = true;
+                psi.CreateNoWindow = true;
 
-            _cmdProcess.OutputDataReceived += _cmdProcess_OutputDataReceived;
+                _cmdProcess.OutputDataReceived += _cmdProcess_OutputDataReceived;
 
-            _cmdProcess.StartInfo = processStartInfo;
-            _cmdProcess.Start();
+                _cmdProcess.StartInfo = psi;
+                _cmdProcess.Start();
 
-            _streamWriter = _cmdProcess.StandardInput;
-            _cmdProcess.BeginOutputReadLine();
+                _streamWriter = _cmdProcess.StandardInput;
+                _cmdProcess.BeginOutputReadLine();
+            }
         }
-
+        protected Process getProcessById(int processId)
+        {
+            return ReadStdOut.GetProcessById(processId);
+        }
         public string ExecuteCommand(string command)
         {
             _cmdOutput = String.Empty;
