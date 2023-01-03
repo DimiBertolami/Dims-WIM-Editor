@@ -17,11 +17,22 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="ISO ACTIONS" Margin="5,0,5,60" Foreground="#FF56AB12" FontWeight="Bold" FontStyle="Italic" BorderBrush="#FF5DE644" FontSize="14" Grid.RowSpan="2"/>
-        <GroupBox Header="WIM Updates" Margin="420,52,4,61" Background="#FF1A4532" Foreground="#FFCFE014" FontStyle="Italic" FontSize="16" FontWeight="Bold" Opacity="0.4" Grid.RowSpan="2" Grid.Row="1"/>
-        <GroupBox Header="WIM ACTIONS" Margin="5,66,5,3" Background="#FF1A4532" Foreground="#FFCFE014" FontWeight="Bold" FontStyle="Italic" FontSize="16" Opacity="0.4" Grid.RowSpan="2" />
-        <GroupBox Header="CREATE (P)reBoot Execution (E)nvironment" Margin="5,52,309,61" Background="#FF1A4532" Foreground="#FFCFE014" FontSize="16" FontWeight="Bold" FontStyle="Italic" Opacity="0.4" Grid.RowSpan="2" Grid.Row="1">
-            <Image HorizontalAlignment="Left" Height="80" VerticalAlignment="Bottom" Margin="18,0,0,0" Width="144" Source="/w10logo.jpg" RenderTransformOrigin="0.3,0.2" Opacity="0.805">
+        <Rectangle HorizontalAlignment="Left" Height="57" Margin="618,3,0,0" Stroke="Black" VerticalAlignment="Top" Width="50" Fill="#FF045812"/>
+        <GroupBox Header="ISO" Margin="5,10,69,25" Foreground="#FF56AB12" FontWeight="Bold" FontStyle="Italic" BorderBrush="#FF5DE644" FontSize="14"/>
+        <GroupBox Header="WIM Updates" Margin="420,32,4,95" Background="#FF1A4532" Foreground="#FFCFE014" FontStyle="Italic" FontSize="16" FontWeight="Bold" Opacity="0.4" Grid.RowSpan="2" Grid.Row="1"/>
+        <GroupBox Header="WIM" Margin="5,54,17,29" Background="#FF1A4532" Foreground="#FFCFE014" FontWeight="Bold" FontStyle="Italic" FontSize="16" Opacity="0.4" Grid.RowSpan="2" >
+            <Button Content="WIM" HorizontalAlignment="Left" Margin="155,0,0,0" VerticalAlignment="Top" Width="30" FontSize="8" Click="cpWIM"/>
+        </GroupBox>
+        <GroupBox Header="ADK" Margin="5,31,305,95" Background="#FF1A4532" Foreground="#FFCFE014" FontSize="16" FontWeight="Bold" FontStyle="Italic" Opacity="0.4" Grid.RowSpan="2" Grid.Row="1">
+            <Image HorizontalAlignment="Left" Height="86" VerticalAlignment="Bottom" Margin="5,0,0,0" Width="309" Source="/w10logo.jpg" RenderTransformOrigin="0.174,0.2" Opacity="0.805">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform AngleY="-0.314"/>
+                        <RotateTransform/>
+                        <TranslateTransform Y="0.652"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
                 <Image.Effect>
                     <BlurEffect/>
                 </Image.Effect>
@@ -35,49 +46,41 @@
                 </Image.LayoutTransform>
             </Image>
         </GroupBox>
-        <Label Content="to" HorizontalAlignment="Left" Margin="94,5,0,0" VerticalAlignment="Top" Height="29" Width="22" Foreground="#FFECF718" Background="#FF266809" UseLayoutRounding="True" FontWeight="Bold" Grid.Row="1"/>
-        <TextBox x:Name="MountPoint" HorizontalAlignment="Left" Margin="120,5,0,0" TextWrapping="Wrap" Text="C:\MOUNT" VerticalAlignment="Top" Width="78" AutomationProperties.HelpText="test" Height="29" Foreground="#FFD9C721" Background="#FF1F69C0" FontWeight="Bold" FontStyle="Italic" FontSize="14" BorderThickness="0,0,0,0" Grid.Row="1">
+        <Label Content="to" HorizontalAlignment="Left" Margin="60,74,0,0" VerticalAlignment="Top" Height="29" Width="22" Foreground="#FFECF718" Background="#FF266809" UseLayoutRounding="True" FontWeight="Bold" Grid.RowSpan="2"/>
+        <TextBox x:Name="MountPoint" HorizontalAlignment="Left" Margin="82,74,0,0" TextWrapping="Wrap" Text="C:\MOUNT" VerticalAlignment="Top" Width="78" AutomationProperties.HelpText="test" Height="29" Foreground="#FFD9C721" Background="#FF1F69C0" FontWeight="Bold" FontStyle="Italic" FontSize="14" BorderThickness="0,0,0,0" Grid.RowSpan="2">
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
         </TextBox>
-        <TextBox x:Name="Index" Margin="249,5,395,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="29" ToolTip="WIM Index (from wiminfo))!" Background="#FF1A62AC" Foreground="#FFE3D22B" FontWeight="Bold" FontSize="16" BorderThickness="0,0,0,0" Grid.Row="1" >
+        <TextBox x:Name="Index" Margin="241,74,418,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="29" ToolTip="WIM Index (from wiminfo))!" Background="#FF1A62AC" Foreground="#FFE3D22B" FontWeight="Bold" FontSize="16" BorderThickness="0,0,0,0" Grid.RowSpan="2" >
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
         </TextBox>
-        <TextBox x:Name="ISO" FontSize="10" FontStretch="UltraExpanded" HorizontalAlignment="Left" Margin="15,20,0,0" TextWrapping="Wrap" Text="C:\Users\Admin\Desktop\dewSystems\ISO\Gandalf10PE.ISO" VerticalAlignment="Top" Width="320" Height="38" ToolTip="Path to PE based ISO" Background="#FF0B63CB" Foreground="#FFDAC813" BorderThickness="0,0,0,0" FontWeight="ExtraBold" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Oblique" >
+        <TextBox x:Name="ISO" FontSize="10" FontStretch="UltraExpanded" HorizontalAlignment="Left" Margin="15,28,0,0" TextWrapping="Wrap" Text="C:\Users\Admin\Desktop\dewSystems\ISO\Gandalf10PE.ISO" VerticalAlignment="Top" Width="320" Height="19" ToolTip="Path to PE based ISO" Background="#FF0B63CB" Foreground="#FFDAC813" BorderThickness="0,0,0,0" FontWeight="ExtraBold" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Oblique" >
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
         </TextBox>
-        <Button Content="Mount" HorizontalAlignment="Left" Margin="204,5,0,0" VerticalAlignment="Top" Width="40" Click="MountWIM" Height="29" Grid.Row="1"/>
-        <Button Content="UnMount" HorizontalAlignment="Left" Margin="285,5,0,0" VerticalAlignment="Top" Width="69" Click="UnMountWIM" Height="29" Grid.Row="1"/>
-        <Button x:Name="Copy_WIM" Content="Copy WIM" HorizontalAlignment="Left" VerticalAlignment="Top" Width="72" Click="CopyWIM" Height="29" Margin="17,5,0,0" Grid.Row="1" />
-        <Button Content="Discard" HorizontalAlignment="Left" Margin="358,5,0,0" VerticalAlignment="Top" Width="66" Height="29" Click="UnMountWIMDiscard" Grid.Row="1"/>
-        <Button Content="Cleanup Wim" HorizontalAlignment="Left" Margin="432,5,0,0" VerticalAlignment="Top" Width="96" Height="29" Click="CleanupWim" Grid.Row="1"/>
-        <Button Content="Cleanup MountPoints" HorizontalAlignment="Left" Margin="536,5,0,0" VerticalAlignment="Top" Width="125" Height="29" Click="CleanUpMountPoints" Grid.Row="1"/>
-        <Button Content="Install ADK" HorizontalAlignment="Left" Margin="15,23,0,0" VerticalAlignment="Top" Click="adksetup" Width="80" ToolTip="Quick silent installer for windows Assesment and Deployment Kit" Height="20" Grid.Row="2"/>
-        <Button Content="Install ADK PE" HorizontalAlignment="Left" Margin="15,45,0,0" VerticalAlignment="Top" Click="ADKPESetup" ToolTip="Quick silent installer for windows ADK PE Addon Setup" Height="20" Width="80" Grid.Row="2"/>
-        <Button x:Name="Help" Content="Help" HorizontalAlignment="Left" Margin="625,17,0,0" VerticalAlignment="Top" Click="about" Height="20" Width="36" ToolTip="Software by D. Bertolami" Background="#FFF14040" Foreground="#FFDCCD42" FontWeight="Bold"/>
-        <Button Content="Shell" HorizontalAlignment="Left" VerticalAlignment="Top" Width="36" Click="SpawnAShell" Height="20" Margin="625,44,0,0" ToolTip="open up a unique instance of my cmd prompt and redirect my cmds in there.." Background="#FF1A42DF" Foreground="#FFE8F316" FontWeight="Bold"/>
-        <Button Content="mount" HorizontalAlignment="Left" Margin="343,21,0,0" VerticalAlignment="Top" Click="MountISO" Height="37" Width="57" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9"/>
-        <Button Content="Add drivers" HorizontalAlignment="Left" Margin="436,21,0,0" VerticalAlignment="Top" Width="106" Click="AddPEDrivers" Height="24" Grid.Row="2"/>
-        <Button Content="Slipstream updates" HorizontalAlignment="Left" Margin="436,60,0,0" VerticalAlignment="Top" Click="SlipstreamKB" Height="20" Width="108" Grid.Row="2"/>
-        <Button Content="add cabs" HorizontalAlignment="Left" Margin="436,97,0,0" VerticalAlignment="Top" ToolTip="these are the optional winPE components..." Height="20" Width="60" Click="addCabs" Grid.Row="2"/>
-        <Button Content="add apps" HorizontalAlignment="Left" Margin="502,97,0,0" VerticalAlignment="Top" ToolTip="to add optiona apps... doesn't work though yet.." Height="20" Width="64" Grid.Row="2"/>
-        <Button x:Name="WimInfo" Content="WimInfo" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Click="getWIMInfo" Height="20" Margin="572,97,0,0" Grid.Row="2"/>
-        <Button Content="MountedWimInfo" HorizontalAlignment="Left" Margin="550,60,0,0" VerticalAlignment="Top" Width="98" Click="getMountedWIMInfo" Height="20" Grid.Row="2"/>
-        <Button Content="Get-Packages" HorizontalAlignment="Left" Margin="548,21,0,0" VerticalAlignment="Top" Width="100" Height="24" Click="getPackages" Grid.Row="2"/>
-        <Button Content="MountWIM" HorizontalAlignment="Left" Margin="162,46,0,0" VerticalAlignment="Top" Width="92" ToolTip="Mount ADK Boot.wim" Height="21" Click="adkMountWIM" Grid.Row="2"/>
-        <Button Content="CopyPE" HorizontalAlignment="Left" Margin="106,19,0,0" VerticalAlignment="Top" Width="50" ToolTip="Copy ADK boot.wim" Height="24" Click="adkCopyPE" Grid.Row="2" />
-        <Button Content="VOS" HorizontalAlignment="Left" Margin="106,45,0,0" VerticalAlignment="Top" Click="vOS" ToolTip="Validation-OS WIM (choose this one or the ADK PE One)" Height="20" Width="50" Grid.Row="2" />
-        <Button Content="ADK WIMINFO" HorizontalAlignment="Left" VerticalAlignment="Top" Click="getADKWIMNFO" Width="92" Height="22" Margin="162,19,0,0" Grid.Row="2" />
-        <Button Content="Optional Cabs" HorizontalAlignment="Left" Margin="162,74,0,0" VerticalAlignment="Top" Click="AddCabz" Width="92" Height="18" Grid.Row="2"/>
-        <Button Content="get-Packages" HorizontalAlignment="Left" Margin="162,0,0,0" VerticalAlignment="Center" Click="getADKPackages" Width="92" Height="21" Grid.Row="2" />
+        <Button Content="Mount" HorizontalAlignment="Left" Margin="197,74,0,0" VerticalAlignment="Top" Width="40" Click="MountWIM" Height="29" Grid.RowSpan="2"/>
+        <Button Content="UnMount" HorizontalAlignment="Left" Margin="276,74,0,0" VerticalAlignment="Top" Width="69" Click="UnMountWIM" Height="29" Grid.RowSpan="2"/>
+        <Button x:Name="Copy_WIM" Content="CopyPE" HorizontalAlignment="Left" VerticalAlignment="Top" Width="45" Click="CopyWIM" Height="29" Margin="14,74,0,0" Grid.RowSpan="2" />
+        <Button Content="Discard" HorizontalAlignment="Left" Margin="349,74,0,0" VerticalAlignment="Top" Width="66" Height="29" Click="UnMountWIMDiscard" Grid.RowSpan="2"/>
+        <Button Content="Cleanup Wim" HorizontalAlignment="Left" Margin="420,74,0,0" VerticalAlignment="Top" Width="96" Height="29" Click="CleanupWim" Grid.RowSpan="2"/>
+        <Button Content="Cleanup MountPoints" HorizontalAlignment="Left" Margin="522,74,0,0" VerticalAlignment="Top" Width="125" Height="29" Click="CleanUpMountPoints" Grid.RowSpan="2"/>
+        <Button x:Name="Help" Content="Help" HorizontalAlignment="Left" Margin="580,3,0,0" VerticalAlignment="Top" Click="about" Height="15" Width="26" ToolTip="Software by D. Bertolami" Background="#FFF14040" Foreground="#FFDCCD42" FontWeight="Bold" FontSize="8"/>
+        <Button Content="Shell" HorizontalAlignment="Left" VerticalAlignment="Top" Width="45" Click="SpawnAShell" Height="12" Margin="620,5,0,0" ToolTip="open up a unique instance of my cmd prompt and redirect my cmds in there.." Background="#FF1A42DF" Foreground="#FFE8F316" FontWeight="Bold" FontSize="6" Opacity="0.5" Visibility="Visible"/>
+        <Button Content="mount" HorizontalAlignment="Left" Margin="343,23,0,0" VerticalAlignment="Top" Click="MountISO" Height="29" Width="57" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10"/>
+        <Button Content="Add drivers" HorizontalAlignment="Left" Margin="436,1,0,0" VerticalAlignment="Top" Width="106" Click="AddPEDrivers" Height="24" Grid.Row="2"/>
+        <Button Content="Slipstream updates" HorizontalAlignment="Left" Margin="436,40,0,0" VerticalAlignment="Top" Click="SlipstreamKB" Height="20" Width="108" Grid.Row="2"/>
+        <Button Content="add cabs" HorizontalAlignment="Left" Margin="436,77,0,0" VerticalAlignment="Top" ToolTip="these are the optional winPE components..." Height="20" Width="60" Click="addCabs" Grid.Row="2"/>
+        <Button Content="add apps" HorizontalAlignment="Left" Margin="502,77,0,0" VerticalAlignment="Top" ToolTip="to add optiona apps... doesn't work though yet.." Height="20" Width="64" Grid.Row="2"/>
+        <Button x:Name="WimInfo" Content="WimInfo" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Click="getWIMInfo" Height="20" Margin="572,77,0,0" Grid.Row="2"/>
+        <Button Content="MountedWimInfo" HorizontalAlignment="Left" Margin="550,40,0,0" VerticalAlignment="Top" Width="98" Click="getMountedWIMInfo" Height="20" Grid.Row="2"/>
+        <Button Content="Get-Packages" HorizontalAlignment="Left" Margin="548,1,0,0" VerticalAlignment="Top" Width="100" Height="24" Click="getPackages" Grid.Row="2"/>
         <StatusBar Margin="0,209,0,0" Grid.Row="2"/>
-        <Button Content="dismount" HorizontalAlignment="Left" Margin="405,21,0,0" VerticalAlignment="Top" Click="DismountISO" Height="37" Width="73" ToolTip="dismount virtual disk (virtual eject)" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9"/>
-        <Button Content="ISO" HorizontalAlignment="Left" Margin="487,22,0,0" VerticalAlignment="Top" Click="CreateBootableISO" Height="36" Width="49" RenderTransformOrigin="0.5,0.5" ToolTip="Create a bootable WindowsPE ISO for use in network boot, usb boot, AIOboot ..." Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9">
+        <Button Content="dismount" HorizontalAlignment="Left" Margin="401,23,0,0" VerticalAlignment="Top" Click="DismountISO" Height="29" Width="73" ToolTip="dismount virtual disk (virtual eject)" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10"/>
+        <Button Content="ISO" HorizontalAlignment="Left" Margin="512,23,0,0" VerticalAlignment="Top" Click="CreateBootableISO" Height="26" Width="47" RenderTransformOrigin="0.5,0.5" ToolTip="Create a bootable WindowsPE ISO for use in network boot, usb boot, AIOboot ..." Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -87,7 +90,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Button Content="USB" HorizontalAlignment="Left" Margin="543,22,0,0" VerticalAlignment="Top" Click="CreateBootableUsb" ToolTip="Create bootable USB disk from my customised sources. " Height="36" Width="39" RenderTransformOrigin="0.5,0.5" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="8,5,6,9">
+        <Button Content="USB" HorizontalAlignment="Left" Margin="560,23,0,0" VerticalAlignment="Top" Click="CreateBootableUsb" ToolTip="Create bootable USB disk from my customised sources. " Height="27" Width="37" RenderTransformOrigin="0.5,0.5" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -97,18 +100,29 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Button Content="Clean Image" HorizontalAlignment="Left" Margin="270,17,0,0" VerticalAlignment="Top" Width="72" Height="32" Click="CleanupIMG" Grid.Row="2"/>
-        <Button Content="Save WIM" HorizontalAlignment="Left" Margin="270,55,0,0" VerticalAlignment="Top" Click="UnmountAdkIMG" Width="70" Height="34" Grid.Row="2"/>
-        <Button Content="Export WIM" HorizontalAlignment="Left" Margin="270,0,0,0" VerticalAlignment="Center" Click="ExportWIMAdk" Width="70" Height="27" Grid.Row="2"/>
-        <StatusBar x:Name="StatusBar" Margin="5,160,4,0" Height="40" VerticalAlignment="Top" Background="#FF3C6228" BorderBrush="#FF729CE9" Grid.Row="2">
+        <StatusBar x:Name="StatusBar" Margin="5,180,4,0" Height="20" VerticalAlignment="Top" Background="#FF3C6228" BorderBrush="#FF729CE9" Grid.Row="2">
             <StatusBar.Foreground>
                 <ImageBrush/>
             </StatusBar.Foreground>
         </StatusBar>
-        <TextBox x:Name="usb" Margin="585,25,75,0" TextWrapping="Wrap" Text="d:" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="29" ToolTip="WIM Index (from wiminfo))!" Background="#FF1A62AC" Foreground="#FFE3D22B" FontWeight="Bold" FontSize="16" BorderThickness="0,0,0,0" >
+        <TextBox x:Name="usb" Margin="478,28,177,0" TextWrapping="Wrap" Text="d:" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="19" ToolTip="WIM Index (from wiminfo))!" Background="#FF1A62AC" Foreground="#FFE3D22B" FontWeight="Bold" FontSize="8" BorderThickness="0,0,0,0" >
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
         </TextBox>
+        <Button Content="Install ADK" HorizontalAlignment="Left" Margin="26,57,0,0" VerticalAlignment="Top" Click="adksetup" Width="67" ToolTip="Quick silent installer for windows Assesment and Deployment Kit" Height="19" Grid.Row="1" Grid.RowSpan="2"/>
+        <Button Content="ADK PE" HorizontalAlignment="Left" Margin="99,57,0,0" VerticalAlignment="Top" Click="ADKPESetup" ToolTip="Quick silent installer for windows ADK PE Addon Setup" Height="19" Width="47" Grid.Row="1" Grid.RowSpan="2"/>
+        <Button Content="Mount" HorizontalAlignment="Left" Margin="307,4,0,0" VerticalAlignment="Top" Width="39" ToolTip="Mount ADK Boot.wim" Height="20" Click="adkMountWIM" Grid.Row="2" RenderTransformOrigin="0.413,0.668"/>
+        <Button Content="Copy PE" HorizontalAlignment="Left" Margin="253,28,0,0" VerticalAlignment="Top" Width="49" ToolTip="Copy ADK boot.wim" Height="20" Click="adkCopyPE" Grid.Row="2" />
+        <Button Content="Copy VOS" HorizontalAlignment="Left" Margin="189,28,0,0" VerticalAlignment="Top" Click="vOS" ToolTip="Validation-OS WIM (choose this one or the ADK PE One)" Height="20" Width="59" Grid.Row="2" />
+        <Button Content="Wiminfo" HorizontalAlignment="Left" VerticalAlignment="Top" Click="getADKWIMNFO" Width="54" Height="18" Margin="292,77,0,0" Grid.Row="2" />
+        <Button Content="Install Cabs" HorizontalAlignment="Left" Margin="182,53,0,0" VerticalAlignment="Top" Click="AddCabz" Width="79" Height="20" Grid.Row="2"/>
+        <Button Content="get-Cabs" HorizontalAlignment="Left" Margin="181,77,0,0" VerticalAlignment="Top" Click="getADKPackages" Width="80" Height="18" Grid.Row="2" />
+        <Button Content="Clean" HorizontalAlignment="Left" Margin="307,28,0,0" VerticalAlignment="Top" Width="39" Height="20" Click="CleanupIMG" Grid.Row="2"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="267,54,0,0" VerticalAlignment="Top" Click="UnmountAdkIMG" Width="35" Height="19" Grid.Row="2"/>
+        <Button Content="export" HorizontalAlignment="Left" Margin="307,54,0,0" VerticalAlignment="Top" Click="ExportWIMAdk" Width="39" Height="19" Grid.Row="2"/>
+        <CheckBox x:Name="StdOut" Content="Output" HorizontalAlignment="Left" Margin="618,17,0,0" VerticalAlignment="Top" Width="54" FontSize="8" Background="#FF223451" Foreground="#FFEED741" FontStyle="Italic" Opacity="0.5" Visibility="Visible" IsChecked="True"/>
+        <CheckBox x:Name="StdIn" Content="Input" HorizontalAlignment="Left" Margin="618,45,0,0" VerticalAlignment="Top" FontSize="8" Width="54" Background="#FF223451" Foreground="#FFEED741" FontStyle="Italic" Opacity="0.5" Visibility="Visible" IsChecked="True"/>
+        <CheckBox x:Name="StdErr" Content="Error" HorizontalAlignment="Left" Margin="618,31,0,0" VerticalAlignment="Top" FontSize="8" Width="54" Background="#FF223451" Foreground="#FFEED741" FontStyle="Italic" Opacity="0.5" Visibility="Visible" IsChecked="True"/>
     </Grid>
 </Window>
