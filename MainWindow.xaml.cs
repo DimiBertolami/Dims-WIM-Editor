@@ -24,6 +24,7 @@ using System.IO.Packaging;
 using CmdApp;
 using System.Windows.Controls.Primitives;
 using System.Xml.Linq;
+using System.Net.NetworkInformation;
 
 namespace DimsISOTweaker
 {
@@ -32,7 +33,7 @@ namespace DimsISOTweaker
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string StandardArguments = " /k color 9e & title WIM-Editor & echo off";
+        private const string StandardArguments = "color 9e & title WIM-Editor";
         private object val;
 
         public int ID { get; set; } = 0;
@@ -40,17 +41,52 @@ namespace DimsISOTweaker
         {
             InitializeComponent();
         }
+        private void SpawnAShell(object sender, RoutedEventArgs e)
+        // it's Spawn - A - Shell .. not Spawn as Hell !
+        {
+            //int PID = Global.PID;
+            if (Global.PID == 0)
+            {
+                Process x = new ReadStdOut().CreateProcess("echo off & @echo if you listen to a unix Shell, you can hear the C! & @echo on", false, StandardArguments);
+                Global.ps = x;
+            }
+            else
+            {
+                //Process x = Process.GetProcessById(Global.PID);
+                Process x = Process.GetProcessById(Global.PID);
+                x.StartInfo.RedirectStandardInput = true;
+                x.StandardInput.WriteLine("If you listen to a unix shell, you can hear the C!");
+                x.StartInfo.RedirectStandardInput = false;
+            }
+        }
+
 
         public void MountISO(object sender, RoutedEventArgs e)
         {
             int PID = Global.PID;
             if (PID == 0)
             {
-                PID = new ReadStdOut().CreateProcess(" /c powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"", _contentLoaded, StandardArguments);
+                Global.ps = new ReadStdOut().CreateProcess("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"", _contentLoaded, StandardArguments);
             }
             else
             {
-                Process.GetProcessById(PID).StandardInput.WriteLine(" /c powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+                var ps = Global.ps;
+                var Psi = ps.StartInfo;
+
+                ps.StartInfo.RedirectStandardInput = true;
+                ps.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+                ps.WaitForExit();
+                ps.StartInfo.RedirectStandardInput = false;
+
+                //Psi.RedirectStandardInput.ToString();
+                //Psi.RedirectStandardInput = true;
+                //MessageBox.Show("bool : " + Psi.RedirectStandardInput);
+
+                //MessageBox.Show("redirect STD In:" + x.StartInfo.RedirectStandardInput);
+                //x.StartInfo.RedirectStandardInput = true;
+                //x.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+                //x.StartInfo.RedirectStandardInput = false;
+                //Process.GetProcessById(PID).StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
             }
         }
 
@@ -59,7 +95,7 @@ namespace DimsISOTweaker
             int PID = Global.PID;
             if (PID == 0)
             {
-                PID = new ReadStdOut().CreateProcess("/c powershell.exe -Command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"", _contentLoaded, StandardArguments);
+                Process ps = new ReadStdOut().CreateProcess("/c powershell.exe -Command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"", _contentLoaded, StandardArguments);
             }
             else
             {
@@ -173,39 +209,6 @@ namespace DimsISOTweaker
             new ReadStdOut().CreateProcess(" /c dism /Cleanup-Mountpoints", _contentLoaded, StandardArguments);
         }
 
-        private void SpawnAShell(object sender, RoutedEventArgs e)
-        // it's Spawn - A - Shell .. not Spawn as Hell !
-        {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Global.PID = new ReadStdOut().CreateProcess(" /k ", true, StandardArguments);
-            }
-            else 
-            {
-                Process x = Process.GetProcessById(PID);
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("If you listen to a unix shell, you can hear the C!");
-                x.StartInfo.RedirectStandardInput = false;
-
-            }
-        }
-        //new PS().Create("echo hello world!");
-        //var cmdStartInfo = new ProcessStartInfo() { };
-        //    cmdStartInfo.RedirectStandardInput = true;
-        //    cmdStartInfo.CreateNoWindow = false;
-        //    cmdStartInfo.UseShellExecute = false;
-        //    cmdStartInfo.FileName = "cmd.exe";
-        //    cmdStartInfo.Arguments = " /k color 9e";
-        //    cmdStartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-        //    cmdStartInfo.WorkingDirectory = MountPoint.Text;
-        //    var cmdProcess = new Process();
-        //    cmdProcess.Start();
-
-        //    PID = cmdProcess.Id;
-        //    cmdProcess.StandardInput.WriteLine("echo dit is een test!");
-        //}
-
         private void CleanupWim(object sender, RoutedEventArgs e)
         {
             new ReadStdOut().CreateProcess(" /c dism /Cleanup-Wim", _contentLoaded, StandardArguments);
@@ -294,13 +297,13 @@ namespace DimsISOTweaker
 
         private void getADKWIMNFO(object sender, RoutedEventArgs e)
         {
-            new ReadStdOut().CreateProcess("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:1", _contentLoaded, StandardArguments);
+            Process ps = new ReadStdOut().CreateProcess("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:1", _contentLoaded, StandardArguments);
         }
 
         private void CreateIso(object sender, RoutedEventArgs e)
         {
-            int PID = new ReadStdOut().CreateProcess(" /k pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /ISO C:\\AMDimPE c:\\users\\admin\\Desktop\\AMDPE64.iso", _contentLoaded, StandardArguments);
-            if(PID > 0) { }
+            Process ps = new ReadStdOut().CreateProcess(" /k pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /ISO C:\\AMDimPE c:\\users\\admin\\Desktop\\AMDPE64.iso", _contentLoaded, StandardArguments);
+            //if(PID > 0) { }
         }
 
         private void CreateBootableUsb(object sender, RoutedEventArgs e)
@@ -308,7 +311,7 @@ namespace DimsISOTweaker
             int PID = Global.PID;
             if (PID == 0)
             {
-                Global.PID = new ReadStdOut().CreateProcess(" pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /UFD C:\\AMDimPE " + usb.Text, true);
+                Global.ps = new ReadStdOut().CreateProcess(" pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /UFD C:\\AMDimPE " + usb.Text, true);
             }
             else 
             {

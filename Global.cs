@@ -9,5 +9,6 @@ namespace DimsISOTweaker
     internal class Global
     {
         public static int PID { get; set; } = 0;
+        public string ps { get; set; } = string.Empty;
     }
 }
