@@ -39,6 +39,7 @@ namespace DimsISOTweaker
         private object val;
 
         public int ID { get; set; } = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -50,11 +51,12 @@ namespace DimsISOTweaker
                 Global.Args = "echo hello From Dimi!";
                 Process x = new ReadStdOut().CreateProcess(Global.Args, false, StandardArguments);
                 x.StandardInput.WriteLine("echo off & cls");
+                x.StartInfo.RedirectStandardInput = false;
                 Global.ps = x;
             }
             else
             {
-                Process x = Process.GetProcessById(Global.PID);
+                Process x = Global.ps;
                 x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("echo off & cls");
                 x.StartInfo.RedirectStandardInput = false;
@@ -67,9 +69,11 @@ namespace DimsISOTweaker
             int PID = Global.PID;
             if (PID == 0)
             {
-                Global.Args = "powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"";
+                Global.Args = "set installers= ..\\..\\..\\Installers";
+                
                 Process x = new ReadStdOut().CreateProcess("echo Mounting ISO...", false, StandardArguments);
                 x.StandardInput.WriteLine(Global.Args);
+                x.StandardInput.WriteLine("powershell - command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
                 Global.ps = x;
             }
             else
@@ -96,9 +100,9 @@ namespace DimsISOTweaker
             {
                 Process x = Global.ps;
                 Global.Args = "powershell -command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"";
-                x.StartInfo.RedirectStandardInput = true;
+                //x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
-                x.StartInfo.RedirectStandardInput = false;
+                //x.StartInfo.RedirectStandardInput = false;
             }
         }
 
@@ -110,15 +114,16 @@ namespace DimsISOTweaker
                 Process x = new ReadStdOut().CreateProcess("echo creating local PE Environment...", false, StandardArguments);
                 x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
                 x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
+                x.StartInfo.RedirectStandardInput = false;
                 Global.ps = x;
-
             }
             else
             {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
+                //x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
                 x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
+                x.StartInfo.RedirectStandardInput = false;
             }
         }
 
@@ -144,12 +149,14 @@ namespace DimsISOTweaker
                     {
                         Process x = new ReadStdOut().CreateProcess("echo creating local PE Environment...", false, StandardArguments);
                         x.StandardInput.WriteLine("echo boot.wim copied from gandalfPE");
+                        x.StartInfo.RedirectStandardInput = false;
                         Global.ps = x;
                     } else
                     {
                         Process x = Global.ps;
                         x.StartInfo.RedirectStandardInput = true;
                         x.StandardInput.WriteLine("echo boot.wim copied from gandalfPE");
+                        x.StartInfo.RedirectStandardInput = false;
                     }
                 }
             }
@@ -293,9 +300,10 @@ namespace DimsISOTweaker
             {
                 Process x = Global.ps;
                 x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\"");
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\" +
-                    "amd64\\WinPE_OCs\" & cd en-us & for /f \"usebackq tokens=*\" %a in (`dir *.cab /b`) do dism /Image:" + MountPoint.Text + "\\MOUNTDIR /Add-Package /PackagePath:\"%a");
+                x.StandardInput.WriteLine("pushd C:\\ESD\\cabs\\neutral");
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\MOUNTDIR /Add-Package /PackagePath:C:\\ESD\\cabs\\neutral");
+                x.StandardInput.WriteLine("cd .. & cd en-us");
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\MOUNTDIR /Add-Package /PackagePath:C:\\ESD\\cabs\\en-us");
                 //x.StartInfo.RedirectStandardInput = false;
             }
         }
@@ -306,18 +314,20 @@ namespace DimsISOTweaker
             {
                 Process x = new ReadStdOut().CreateProcess("echo adding optional components...", false, StandardArguments);
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
-                x.StandardInput.WriteLine("echo off & for /f \"usebackq tokens=*\" %a in (`dir *.cab /b`) do dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"%a");
-                x.StandardInput.WriteLine("cd en-us & for /f \"usebackq tokens=*\" %a in (`dir *.cab /b`) do dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"%a");
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mountdir /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
+                x.StandardInput.WriteLine("cd en-us");
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mountdir /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us");
                 Global.ps = x;
             }
             else
             {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
+                //x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
-                x.StandardInput.WriteLine("echo off & for /f \"usebackq tokens=*\" %x in (`dir *.cab /b`) do dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"%x\"");
-                x.StandardInput.WriteLine("cd en-us & for /f \"usebackq tokens=*\" %a in (`dir *.cab /b`) do dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\ & dism /Image:C:\\MOUNT\\MOUNTDIR /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us\\");
-                x.StartInfo.RedirectStandardInput = false;
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mountdir /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
+                x.StandardInput.WriteLine("cd en-us");
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mountdir /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us");
+                //x.StartInfo.RedirectStandardInput = false;
             }
         }
 
@@ -541,14 +551,14 @@ namespace DimsISOTweaker
             if (PID == 0)
             {
                 Process x = new ReadStdOut().CreateProcess("echo getting optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /get-Packages");
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mountDIR /get-Packages");
                 Global.ps = x;
             }
             else
             {
                 Process x = Global.ps;
                 x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /get-Packages");
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mountDIR /get-Packages");
                 x.StartInfo.RedirectStandardInput = false;
             }
         }
@@ -579,7 +589,7 @@ namespace DimsISOTweaker
                 Process x = new ReadStdOut().CreateProcess("echo getting optional components...", false, StandardArguments);
                 x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" +
                              MountPoint.Text +
-                             "\\MOUNTDIR /commit");
+                             "\\MOUNT /commit");
                 Global.ps = x;
             }
             else
@@ -588,7 +598,7 @@ namespace DimsISOTweaker
                 x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" +
                              MountPoint.Text +
-                             "\\MOUNTDIR /commit");
+                             "\\MOUNT /commit");
                 x.StartInfo.RedirectStandardInput = false;
             }
         }
@@ -638,7 +648,7 @@ namespace DimsISOTweaker
             {
                 Process x = new ReadStdOut().CreateProcess("echo getting optional components...", false, StandardArguments);
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\windows Preinstallation Environment");
-                x.StandardInput.WriteLine("MakeWinPEMedia.cmd /ISO " + MountPoint.Text + " " + MountPoint.Text + "\\newPE.iso");
+                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /ISO " + MountPoint.Text + " " + MountPoint.Text + "\\newPE.iso /y");
                 Global.ps = x;
             }
             else
@@ -646,7 +656,7 @@ namespace DimsISOTweaker
                 Process x = Global.ps;
                 x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\windows Preinstallation Environment");
-                x.StandardInput.WriteLine("MakeWinPEMedia.cmd /ISO " + MountPoint.Text + " " + MountPoint.Text + "\\newPE.iso");
+                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /ISO " + MountPoint.Text + " " + MountPoint.Text + "\\newPE.iso");
                 x.StartInfo.RedirectStandardInput = false;
             }
         }
@@ -693,21 +703,42 @@ namespace DimsISOTweaker
         private void StdInChange(object sender, RoutedEventArgs e)
         {
             int PID = Global.PID;
-            if (PID == 0)
+            if (StdIn.IsChecked == true)
             {
-                Process x = new ReadStdOut().CreateProcess("echo off & echo Standard Input change: ", false, StandardArguments);
-                x = Global.ps;
-                x.StandardInput.WriteLine("@echo redirect std input:" + x.StartInfo.RedirectStandardInput);
-                if (x.StartInfo.RedirectStandardInput==false){
+                Global.RedirectStandardInput = true;
+
+                if (PID == 0)
+                {
+                    Process x = new ReadStdOut().CreateProcess("echo off & echo Standard Input change: ", false, StandardArguments);
+                    x = Global.ps;
+                    x.StandardInput.WriteLine("@echo redirect std input:" + Global.RedirectStandardInput);
                     x.StartInfo.RedirectStandardInput = true;
-                        } else {
-                    x.StartInfo.RedirectStandardInput = false;
-                        };
+                }
+                else
+                {
+                    Process x = Global.ps;
+                    x.StandardInput.WriteLine("@echo redirect std input:" + Global.RedirectStandardInput);
+                    x.StartInfo.RedirectStandardInput = true;
+                }
             }
             else
             {
-                Process x = Global.ps;
-                x.StandardInput.WriteLine("@echo redirect std input:" + x.StartInfo.RedirectStandardInput);
+                Global.RedirectStandardInput = false;
+
+                if (PID == 0)
+                {
+                    Process x = new ReadStdOut().CreateProcess("echo off & echo Standard Input change: ", false, StandardArguments);
+                    x = Global.ps;
+                    x.StandardInput.WriteLine("@echo redirect std input:" + x.StartInfo.RedirectStandardInput);
+                    x.StartInfo.RedirectStandardInput = false;
+                }
+                else
+                {
+                    Process x = Global.ps;
+                    x.StandardInput.WriteLine("@echo redirect std input:" + x.StartInfo.RedirectStandardInput);
+                    x.StartInfo.RedirectStandardInput = false;
+                }
+
             }
         }
     }
