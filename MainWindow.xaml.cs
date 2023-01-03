@@ -25,8 +25,11 @@ using CmdApp;
 using System.Windows.Controls.Primitives;
 using System.Xml.Linq;
 using System.Net.NetworkInformation;
+<<<<<<< HEAD
 using System.Security.Cryptography;
 using System.Reflection;
+=======
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
 
 namespace DimsISOTweaker
 {
@@ -35,8 +38,13 @@ namespace DimsISOTweaker
     /// </summary>
     public partial class MainWindow : Window
     {
+<<<<<<< HEAD
         private string StandardArguments = Global.Args;
         //private object val;
+=======
+        private const string StandardArguments = "color 9e & title WIM-Editor";
+        private object val;
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
 
         public int ID { get; set; } = 0;
         public MainWindow()
@@ -44,20 +52,37 @@ namespace DimsISOTweaker
             InitializeComponent();
         }
         private void SpawnAShell(object sender, RoutedEventArgs e)
+<<<<<<< HEAD
         {
             if (Global.PID == 0)
             {
                 Global.Args = "echo hello From Dimi!";
                 Process x = new ReadStdOut().CreateProcess(Global.Args, false, StandardArguments);
                 x.StandardInput.WriteLine("echo off & cls & @echo if you listen to a unix Shell, you can hear the C! & @echo on");
+=======
+        // it's Spawn - A - Shell .. not Spawn as Hell !
+        {
+            //int PID = Global.PID;
+            if (Global.PID == 0)
+            {
+                Process x = new ReadStdOut().CreateProcess("echo off & @echo if you listen to a unix Shell, you can hear the C! & @echo on", false, StandardArguments);
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
                 Global.ps = x;
             }
             else
             {
+<<<<<<< HEAD
                 Process x = Process.GetProcessById(Global.PID);
                 Global.Args = "echo off & cls & @If you listen to a unix shell, you can hear the C! & @echo on";
                 Global.ps.StandardInput.WriteLine(Global.Args);
                 Global.ps.StartInfo.RedirectStandardInput = false;
+=======
+                //Process x = Process.GetProcessById(Global.PID);
+                Process x = Process.GetProcessById(Global.PID);
+                x.StartInfo.RedirectStandardInput = true;
+                x.StandardInput.WriteLine("If you listen to a unix shell, you can hear the C!");
+                x.StartInfo.RedirectStandardInput = false;
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
             }
         }
 
@@ -67,6 +92,7 @@ namespace DimsISOTweaker
             int PID = Global.PID;
             if (PID == 0)
             {
+<<<<<<< HEAD
                 Global.Args = "powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"";
                 Process x = new ReadStdOut().CreateProcess("echo Mounting ISO...", false, StandardArguments);
                 x.StandardInput.WriteLine(Global.Args);
@@ -79,6 +105,29 @@ namespace DimsISOTweaker
                 x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
                 x.StartInfo.RedirectStandardInput = false;
+=======
+                Global.ps = new ReadStdOut().CreateProcess("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"", _contentLoaded, StandardArguments);
+            }
+            else
+            {
+                var ps = Global.ps;
+                var Psi = ps.StartInfo;
+
+                ps.StartInfo.RedirectStandardInput = true;
+                ps.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+                ps.WaitForExit();
+                ps.StartInfo.RedirectStandardInput = false;
+
+                //Psi.RedirectStandardInput.ToString();
+                //Psi.RedirectStandardInput = true;
+                //MessageBox.Show("bool : " + Psi.RedirectStandardInput);
+
+                //MessageBox.Show("redirect STD In:" + x.StartInfo.RedirectStandardInput);
+                //x.StartInfo.RedirectStandardInput = true;
+                //x.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+                //x.StartInfo.RedirectStandardInput = false;
+                //Process.GetProcessById(PID).StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
             }
         }
 
@@ -87,10 +136,14 @@ namespace DimsISOTweaker
             int PID = Global.PID;
             if (PID == 0)
             {
+<<<<<<< HEAD
                 Global.Args = "powershell -command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"";
                 Process x = new ReadStdOut().CreateProcess("echo Dis-Mounting ISO...", false, StandardArguments);
                 x.StandardInput.WriteLine(Global.Args);
                 Global.ps = x;
+=======
+                Process ps = new ReadStdOut().CreateProcess("/c powershell.exe -Command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"", _contentLoaded, StandardArguments);
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
             }
             else
             {
@@ -336,6 +389,7 @@ namespace DimsISOTweaker
 
         private void CleanupWim(object sender, RoutedEventArgs e)
         {
+<<<<<<< HEAD
             int PID = Global.PID;
             if (PID == 0)
             {
@@ -350,6 +404,9 @@ namespace DimsISOTweaker
                 x.StandardInput.WriteLine("dism /Cleanup-Wim");
                 x.StartInfo.RedirectStandardInput = false;
             }
+=======
+            new ReadStdOut().CreateProcess(" /c dism /Cleanup-Wim", _contentLoaded, StandardArguments);
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
         }
 
         private void getMountedWIMInfo(object sender, RoutedEventArgs e)
@@ -608,6 +665,7 @@ namespace DimsISOTweaker
 
         private void getADKWIMNFO(object sender, RoutedEventArgs e)
         {
+<<<<<<< HEAD
             int PID = Global.PID;
             if (PID == 0)
             {
@@ -622,10 +680,14 @@ namespace DimsISOTweaker
                 x.StandardInput.WriteLine("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:1");
                 x.StartInfo.RedirectStandardInput = false;
             }
+=======
+            Process ps = new ReadStdOut().CreateProcess("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:1", _contentLoaded, StandardArguments);
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
         }
 
         private void CreateIso(object sender, RoutedEventArgs e)
         {
+<<<<<<< HEAD
             int PID = Global.PID;
             if (PID == 0)
             {
@@ -640,6 +702,10 @@ namespace DimsISOTweaker
                 x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /ISO C:\\AMDimPE c:\\users\\admin\\Desktop\\AMDPE64.iso");
                 x.StartInfo.RedirectStandardInput = false;
             }
+=======
+            Process ps = new ReadStdOut().CreateProcess(" /k pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /ISO C:\\AMDimPE c:\\users\\admin\\Desktop\\AMDPE64.iso", _contentLoaded, StandardArguments);
+            //if(PID > 0) { }
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
         }
 
         private void CreateBootableUsb(object sender, RoutedEventArgs e)
@@ -647,9 +713,13 @@ namespace DimsISOTweaker
             int PID = Global.PID;
             if (PID == 0)
             {
+<<<<<<< HEAD
                 Process x = new ReadStdOut().CreateProcess("echo building bootable usb stick...", false, StandardArguments);
                 x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /UFD C:\\AMDimPE " + usb.Text);
                 Global.ps = x;
+=======
+                Global.ps = new ReadStdOut().CreateProcess(" pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & MakeWinPEMedia.cmd /UFD C:\\AMDimPE " + usb.Text, true);
+>>>>>>> 83d00dc3ae07f76b38b65d49ed320ceefb66aab0
             }
             else
             {
