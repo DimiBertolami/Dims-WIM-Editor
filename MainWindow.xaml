@@ -57,7 +57,7 @@
                 <DropShadowEffect/>
             </TextBox.Effect>
         </TextBox>
-        <TextBox x:Name="ISO" FontSize="10" FontStretch="UltraExpanded" HorizontalAlignment="Left" Margin="15,28,0,0" TextWrapping="Wrap" Text="C:\Users\Admin\Desktop\dewSystems\ISO\Gandalf10PE.ISO" VerticalAlignment="Top" Width="320" Height="19" ToolTip="Path to PE based ISO" Background="#FF0B63CB" Foreground="#FFDAC813" BorderThickness="0,0,0,0" FontWeight="ExtraBold" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Oblique" >
+        <TextBox x:Name="ISO" FontSize="10" FontStretch="UltraExpanded" HorizontalAlignment="Left" Margin="15,28,0,0" TextWrapping="Wrap" Text="C:\Users\Admin\Desktop\dewSystems\ISO\Gandalf10PE.ISO" VerticalAlignment="Top" Width="320" Height="19" ToolTip="Path to PE based ISO" Background="#FF0B63CB" Foreground="#FFDAC813" BorderThickness="0,0,0,0" FontWeight="ExtraBold" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Oblique" TextChanged="ISO_TextChanged" >
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
