@@ -15,6 +15,9 @@ namespace DimsISOTweaker
         public static bool RedirectStandardInput { get; set; } = true;
         public static bool RedirectStandardOutput { get; set; } = false;
         public static bool RedirectStandardError { get; set; } = false;
+<<<<<<< HEAD
         //public string ps { get; set; } = string.Empty;
+=======
+>>>>>>> 42ec80438a994506d6e8abded9889aec8778b1c1
     }
 }
