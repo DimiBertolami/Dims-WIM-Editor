@@ -76,10 +76,13 @@ Windows ISO Editor can:
                            [07]: KB5021233
 ```
 
-Now download these MSU update files manually from https://www.catalog.update.microsoft.com/home.aspx <br />and then slipstream them into your mounted boot.wim
+Now download these MSU update files manually from https://www.catalog.update.microsoft.com/home.aspx <br />and then slipstream them into your mounted install.wim
+since dism accepts a packagepath as a folder also this command is the simpler version of the one below.. i just leave it in there for reference..
+```Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath=C:\Mount```
 
 ```
 for /f "usebackq" %x in (`dir *.msu /b`) do Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath="%x"
 ```
+
 
 
