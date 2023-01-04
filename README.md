@@ -23,8 +23,7 @@ Windows ISO Editor can:
   #### TODO: When Shell is opened, output of buttons should be redirected to shell instead of messagebox!
   
 > A More recent screenshot.. alot has changed today!
-![image](https://user-images.githubusercontent.com/77209365/209286246-e52fd47f-2c38-4a9a-b2de-b64327ebc276.png)
-
+![image](https://user-images.githubusercontent.com/77209365/210468600-f03c3f0c-3ec7-4757-b77b-ea43baa5bdfb.png)
 
 
 
