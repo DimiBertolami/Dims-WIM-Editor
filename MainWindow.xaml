@@ -105,7 +105,7 @@
         <Button Content="Save" HorizontalAlignment="Left" Margin="270,84,0,0" VerticalAlignment="Top" Click="UnmountAdkIMG" Width="36" Height="20" Grid.Row="2"/>
         <Button Content="export" HorizontalAlignment="Left" Margin="310,84,0,0" VerticalAlignment="Top" Click="ExportWIMAdk" Width="40" Height="20" Grid.Row="2"/>
         <CheckBox x:Name="StdOut" Content="Out" HorizontalAlignment="Left" Margin="545,1,0,0" VerticalAlignment="Top" Width="40" FontSize="8" Background="#FF223451" Foreground="#FFEED741" FontStyle="Italic" Opacity="0.5" Visibility="Visible" IsChecked="True" Height="17"/>
-        <CheckBox x:Name="StdIn" Content="In" HorizontalAlignment="Left" Margin="505,1,0,0" VerticalAlignment="Top" FontSize="8" Width="40" Background="#FF223451" Foreground="#FFEED741" FontStyle="Italic" Opacity="0.5" Visibility="Visible" IsChecked="False" Height="17" Checked="StdInChange"/>
+        <CheckBox x:Name="StdIn" Content="In" HorizontalAlignment="Left" Margin="505,1,0,0" VerticalAlignment="Top" FontSize="8" Width="40" Background="#FF223451" Foreground="#FFEED741" FontStyle="Italic" Opacity="0.5" Visibility="Visible" IsChecked="True" Height="17" Checked="StdInChange"/>
         <CheckBox x:Name="StdErr" Content="Err" HorizontalAlignment="Left" Margin="585,1,0,0" VerticalAlignment="Top" FontSize="8" Width="40" Background="#FF223451" Foreground="#FFEED741" FontStyle="Italic" Opacity="0.5" Visibility="Visible" IsChecked="True" Height="17" RenderTransformOrigin="0.5,0.5">
             <CheckBox.RenderTransform>
                 <TransformGroup>

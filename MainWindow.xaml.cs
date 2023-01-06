@@ -45,17 +45,16 @@ namespace DimsISOTweaker
 
         private void SpawnAShell(object sender, RoutedEventArgs e)
         {
-            if(Global.PID== 0) 
+            if (Global.PID == 0)
             {
-                Process x = new ReadStdOut().CreateProcess("echo on", true);
-                x.StandardInput.WriteLine("@echo a new shell.. & echo off & color 7e & cls");
-                Global.PID = x.Id;
+                Process x = new ReadStdOut().CreateProcess("echo off", true);
+                x.StandardInput.WriteLine("color 9e & cls");
+                Global.ps = x;
             }
-            else
+            else 
             {
                 Process x = Global.ps;
-                Global.Args = "@echo on & color 7e & cls";
-                x.StandardInput.WriteLine(Global.Args);
+                x.StandardInput.WriteLine("@echo off & color 9e & cls");
             }
         }
 
@@ -307,22 +306,27 @@ namespace DimsISOTweaker
         {
             if (StdIn.IsChecked == true)
             {
-                //Process x = Global.ps;
-                //x.StartInfo.UseShellExecute = false;
-                //x.StartInfo.RedirectStandardInput = true;
-                //var psi = x.StartInfo;
-                //MessageBox.Show(psi.RedirectStandardInput.ToString());
-                //psi.RedirectStandardInput = true;
-                //x.StartInfo.RedirectStandardInput = true;
-                //x.StandardInput.WriteLine("echo redirect standard input: Yes!");
+                if (Global.PID == 0)
+                {
+                    Process x1 = new ReadStdOut().CreateProcess("echo off & color 9e & cls", true);
+                    Global.ps = x1;
+                }
+                else
+                {
+                    Process x1 = Global.ps;
+                    x1.StandardInput.WriteLine("echo.");
+                }
             }
             else
             {
-                //Process x = Global.ps;
-                //var psi = x.StartInfo;
-                //psi.RedirectStandardInput = false;
-                //x.StartInfo.RedirectStandardInput = false;
-                //x.StandardInput.WriteLine("@echo redirect standard input: Nope!");
+                if(Global.PID == 0)
+                {
+                    Process x2 = new ReadStdOut().CreateProcess("echo off & echo has Standard Input changed?", false);
+                }
+                else
+                {
+                    Process x2 = Global.ps;
+                }
             }
         }
 
