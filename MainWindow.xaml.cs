@@ -32,6 +32,49 @@ namespace DimsISOTweaker
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
+    /// 
+    /// E:\sources>dism /Get-WimInfo /WimFile:install.esd
+    /// 
+    /// 
+    /// dism /export-image 
+    ///         /SourceImageFile:install.esd 
+    ///         /SourceIndex:1 
+    ///         /DestinationImageFile:c:\MOUNT\media\sources\install.wim
+    ///         /Compress:max 
+    ///         /CheckIntegrity
+    ///         
+    /// dism /export-image 
+    ///         /SourceImageFile:install.esd 
+    ///         /SourceIndex:2 
+    ///         /DestinationImageFile:c:\MOUNT\media\sources\install.wim 
+    ///         /Compress:max 
+    ///         /CheckIntegrity
+    ///         
+    /// dism /get-wiminfo /wimfile:C:\mount\media\sources\install.wim /Index:1
+    /// 
+    /// DISM.exe /Mount-Wim /WimFile:C:\MOUNT\media\sources\install.wim /index:1 /MountDir:C:\MOUNT\mount
+    /// 
+    /// dism /Image:C:\MOUNT\MOUNT /Add-Package /PackagePath=C:\MOUNT
+    /// deze werkt niet!
+    /// dism /image:C:\MOUNT\mount /Add-Driver /Driver:c:\MOUNT\Drivers /recurse
+    /// 
+    /// Dism /Online /Export-Driver /Destination:c:\mount\drivers
+    /// 
+    /// 
+    /// MakeWinPEMedia.cmd /ISO c:\MOUNT c:\MOUNT\dimiPE.iso
+    /// 
+    /// 
+    /// cd \ADK\Assessment and Deployment Kit\Deployment Tools
+    /// DandISetEnv.bat
+    /// cd..
+    /// cd "Windows Preinstallation Environment"
+    /// MakeWinPEMedia.cmd /ISO c:\MOUNT c:\MOUNT\dimiPE.iso
+    /// 
+    /// 
+    /// 
+    /// 
+    /// 
+    /// 
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -76,8 +119,11 @@ namespace DimsISOTweaker
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
                 Process x = Global.ps;
-                x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
-                x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
+                x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & " +
+                                          "pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & " +
+                                          "call DandISetEnv.bat");
+                x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & " +
+                                          "copype %processor_architecture% " + MountPoint.Text);
         }
 
         private void cpWIM(object sender, RoutedEventArgs e)
@@ -110,18 +156,23 @@ namespace DimsISOTweaker
                 Global.Args = "DISM.exe /Get-WimInfo /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim";
                 x.StandardInput.WriteLine(Global.Args);
         }
+
         public void MountWIM(object sender, RoutedEventArgs e)
         {
                 Process x = Global.ps;
-                Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"" ;
+                Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim " +
+                              "/index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"" ;
                 x.StandardInput.WriteLine(Global.Args);
         }
+
         public void AddPEDrivers(object sender, RoutedEventArgs e)
         {
                 Process x = Global.ps;
-                Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"";
+                Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim " +
+                              "/index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"";
                 x.StandardInput.WriteLine(Global.Args);
         }
+
         void SlipstreamKB(object sender, RoutedEventArgs e)
         {
             // this is how this works:
@@ -145,7 +196,30 @@ namespace DimsISOTweaker
 
         private void about(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("how to update windows 10 ISO/Wim (By Dimi Bertolami)\r\n\r\ntopics:\r\n- extra drivers\r\n- slipstream microsoft kb-updates\r\n- extra executables\r\n- how to write a PE-Network script\r\n\r\nfrom dosbox: \r\n\r\ncreate some temporary directories:\r\n(Here i'll download all the hotfixes)\r\nMD C:\\Mount\r\n\r\n:: extra drivers go into this directory. They will be installed recursively\r\nMD C:\\Mount\\Drivers\r\n\r\n:: boot.wim from the windows ISO goes here\r\nMD C:\\Mount\\BootWIM\r\n\r\n:: this is our Mount-Target Directory (in order to mount a wim file this folder has to be empty)\r\nmd C:\\MOUNT\\MOUNTDIR\r\n\r\nTo Mount an ISO with powershell: \r\npowershell -Command \"Mount-DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gandalf10PE.ISO\"\r\n\r\ndetect drive letter where iso is mounted and copy wim to bootWIM Folder\r\nFOR /D %x in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if EXIST %x:\\sources\\boot.wim (copy %x:\\sources\\boot.wim C:\\Mount\\BootWIM)\r\n\r\ncheck what image index to use\r\ndism /Get-WimInfo /WimFile:C:\\Mount\\BootWIM\\boot.wim\r\n\r\nmount wim file into mount-directory\r\ndism /mount-wim /wimfile:C:\\Mount\\BootWIM\\boot.wim /index:1 /MountDir:C:\\Mount\\MOUNTDIR\r\n\r\nrecursively add drivers to your PE (you must mount wim file first): \r\ndism /image:C:\\Mount\\MOUNTDIR /Add-Driver /Driver:D:\\Drivers /recurse\r\n\r\ndownload necessary updates manually\r\nslipstream downloaded windows updates into your solution\r\nDism /Image:C:\\Mount\\MOUNTDIR /Add-Package /PackagePath=kb4456655.msu /LogPath=C:\\mount\\dism.log\r\n\r\n");
+            //MessageBox.Show("how to update windows 10 ISO/Wim (By Dimi Bertolami)\r\n\r\ntopics:\r" +
+            //                "\n- extra drivers\r\n- slipstream microsoft kb-updates\r\n- extra exe" +
+            //                "cutables\r\n- how to write a PE-Network script\r\n\r\nfrom dosbox: \r" +
+            //                "\n\r\ncreate some temporary directories:\r\n(Here i'll download all t" +
+            //                "he hotfixes)\r\nMD C:\\Mount\r\n\r\n:: extra drivers go into this dir" +
+            //                "ectory. They will be installed recursively\r\nMD C:\\Mount\\Drivers\r" +
+            //                "\n\r\n:: boot.wim from the windows ISO goes here\r\nMD C:\\Mount\\Boo" +
+            //                "tWIM\r\n\r\n:: this is our Mount-Target Directory (in order to mount " +
+            //                "a wim file this folder has to be empty)\r\nmd C:\\MOUNT\\MOUNTDIR\r\n" +
+            //                "\r\nTo Mount an ISO with powershell: \r\npowershell -Command \"Mount-" +
+            //                "DiskImage -ImagePath C:\\Users\\Admin\\Desktop\\dewSystems\\ISO\\Gand" +
+            //                "alf10PE.ISO\"\r\n\r\ndetect drive letter where iso is mounted and cop" +
+            //                "y wim to bootWIM Folder\r\nFOR /D %x in (A B C D E F G H I J K L M N " +
+            //                "O P Q R S T U V W X Y Z) do if EXIST %x:\\sources\\boot.wim (copy %x:" +
+            //                "\\sources\\boot.wim C:\\Mount\\BootWIM)\r\n\r\ncheck what image index" +
+            //                " to use\r\ndism /Get-WimInfo /WimFile:C:\\Mount\\BootWIM\\boot.wim\r\" +
+            //                "n\r\nmount wim file into mount-directory\r\ndism /mount-wim /wimfile:" +
+            //                "C:\\Mount\\BootWIM\\boot.wim /index:1 /MountDir:C:\\Mount\\MOUNTDIR\r" +
+            //                "\n\r\nrecursively add drivers to your PE (you must mount wim file fir" +
+            //                "st): \r\ndism /image:C:\\Mount\\MOUNTDIR /Add-Driver /Driver:D:\\Driv" +
+            //                "ers /recurse\r\n\r\ndownload necessary updates manually\r\nslipstream" +
+            //                " downloaded windows updates into your solution\r\nDism /Image:C:\\Mou" +
+            //                "nt\\MOUNTDIR /Add-Package /PackagePath=kb4456655.msu /LogPath=C:\\mou" +
+            //                "nt\\dism.log\r\n\r\n");
         }
 
         private void addCabs(object sender, RoutedEventArgs e)
@@ -156,13 +230,20 @@ namespace DimsISOTweaker
                 x.StandardInput.WriteLine("cd .. & cd en-us");
                 x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath:C:\\ESD\\cabs\\en-us");
         }
+
         private void AddCabz(object sender, RoutedEventArgs e)
         {
                 Process x = Global.ps;
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
+                x.StandardInput.WriteLine("dism /Image:" + 
+                                MountPoint.Text + "\\mount " +
+                                "/Add-Package " +
+                                "/PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
                 x.StandardInput.WriteLine("cd en-us");
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us");
+                x.StandardInput.WriteLine("dism " +
+                                "/Image:" + MountPoint.Text + "\\mount " +
+                                "/Add-Package " +
+                                "/PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us");
         }
 
 
@@ -198,14 +279,25 @@ namespace DimsISOTweaker
 
         private void CleanupIMG(object sender, RoutedEventArgs e)
         {
-                Process x = Global.ps;
-                x.StandardInput.WriteLine("Dism /Image:" + MountPoint.Text + "\\MOUNT /cleanup-image /StartComponentCleanup /ResetBase");
-                x.StandardInput.WriteLine("Dism /Unmount-Image /MountDir:" + MountPoint.Text + "\\mount /Commit");
-                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:" + Index.Text + " /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\boot_cleaned.wim");
-                if(File.Exists(MountPoint.Text + "\\media\\sources\\install.wim")) 
-                {
-                    x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\install.wim /SourceIndex:" + Index.Text + " /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\install_cleaned.wim");
-                }
+            Process x = Global.ps;
+            x.StandardInput.WriteLine("Dism /Image:" + MountPoint.Text + "\\MOUNT /cleanup-image /StartComponentCleanup /ResetBase");
+            x.StandardInput.WriteLine("Dism /Unmount-Image /MountDir:" + MountPoint.Text + "\\mount /Commit");
+            x.StandardInput.WriteLine("Dism /Export-Image " +
+                "/SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim " +
+                "/SourceIndex:" + Index.Text + " " +
+                "/DestinationImageFile:" + MountPoint.Text + "\\media\\sources\\boot_cleaned.wim");
+            x.StandardInput.WriteLine("move " + MountPoint.Text + "\\media\\sources\\boot.wim " + 
+                MountPoint.Text + "\\media\\sources\\boot.old");
+            x.StandardInput.WriteLine("move " + 
+                MountPoint.Text + "\\media\\sources\\boot_cleaned.wim " + 
+                MountPoint.Text + "\\media\\sources\\boot.wim");
+
+            if (File.Exists(MountPoint.Text + "\\media\\sources\\install.wim")) 
+            {
+                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + 
+                    MountPoint.Text + "\\media\\sources\\install.wim /SourceIndex:" + Index.Text + 
+                    " /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\install_cleaned.wim");
+            }
         }
 
         private void adksetup(object sender, RoutedEventArgs e)
@@ -229,16 +321,18 @@ namespace DimsISOTweaker
         {
                 Process x = Global.ps;
                 x.StandardInput.WriteLine("DISM /mount-wim /wimfile:" + MountPoint.Text + "\\media\\sources\\boot.wim" +
-                    " /index:" + Index.Text +
-                    " /MountDir:" + MountPoint.Text +
-                    "\\MOUNT");
+                    " /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT");
         }
 
         private void adkCopyPE(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps;
-            x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
-            x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
+            x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & " +
+                "pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & " +
+                "call DandISetEnv.bat");
+            x.StandardInput.WriteLine("cd .. & " +
+                "cd Windows Preinstallation Environment & " +
+                "copype %processor_architecture% " + MountPoint.Text);
         }
 
         private void vOS(object sender, RoutedEventArgs e)
@@ -270,15 +364,23 @@ namespace DimsISOTweaker
         private void ExportWIMAdk(object sender, RoutedEventArgs e)
         {
                 Process x = Global.ps;
-                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:" + Index.Text + " /DestinationImageFile:" + MountPoint.Text + "\\media\\sources\\boot2.wim");
-                File.Move(MountPoint.Text + "\\media\\sources\\boot.wim", MountPoint.Text + "\\media\\sources\\boot.old");
-                File.Move(MountPoint.Text + "\\media\\sources\\boot2.wim", MountPoint.Text + "\\media\\sources\\boot.wim");
+                x.StandardInput.WriteLine("Dism /Export-Image " +
+                    "/SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim " +
+                    "/SourceIndex:" + Index.Text + " " +
+                    "/DestinationImageFile:" + MountPoint.Text + "\\media\\sources\\boot2.wim");
+                File.Move(MountPoint.Text + "\\media\\sources\\boot.wim", 
+                    MountPoint.Text + "\\media\\sources\\boot.old");
+                File.Move(MountPoint.Text + "\\media\\sources\\boot2.wim", 
+                    MountPoint.Text + "\\media\\sources\\boot.wim");
         }
 
         private void getADKWIMNFO(object sender, RoutedEventArgs e)
         {
                 Process x = Global.ps;
-                x.StandardInput.WriteLine("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:" + Index.Text);
+                x.StandardInput.WriteLine("DISM " +
+                    "/GET-WIMINFO " +
+                    "/WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM " +
+                    "/INDEX:" + Index.Text);
         }
 
         private void CreateBootableISO(object sender, RoutedEventArgs e)

@@ -21,7 +21,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Rectangle HorizontalAlignment="Left" Height="39" Margin="625,25,0,0" Stroke="#FFA4A4AC" VerticalAlignment="Top" Width="37" Fill="#FF989898"/>
-        <GroupBox Header="ISO" Margin="5,10,69,25" Foreground="#FF56AB12" FontWeight="Bold" FontStyle="Italic" BorderBrush="#FF5DE644" FontSize="14"/>
+        <GroupBox Header="ISO" Margin="5,8,155,25" Foreground="#FF56AB12" FontWeight="Bold" FontStyle="Italic" BorderBrush="#FF5DE644" FontSize="14"/>
         <GroupBox Header="WIM Updates" Margin="420,32,4,95" Background="#FF1A4532" Foreground="#FFCFE014" FontStyle="Italic" FontSize="16" FontWeight="Bold" Opacity="0.4" Grid.RowSpan="2" Grid.Row="1"/>
         <GroupBox Header="WIM" Margin="5,54,17,29" Background="#FF1A4532" Foreground="#FFCFE014" FontWeight="Bold" FontStyle="Italic" FontSize="16" Opacity="0.4" Grid.RowSpan="2" >
             <Button Content="WIM" HorizontalAlignment="Left" Margin="155,0,0,0" VerticalAlignment="Top" Width="25" FontSize="8" Click="cpWIM" Height="26"/>
@@ -38,7 +38,7 @@
                 <DropShadowEffect/>
             </TextBox.Effect>
         </TextBox>
-        <TextBox x:Name="ISO" FontSize="10" FontStretch="UltraExpanded" HorizontalAlignment="Left" Margin="15,24,0,0" TextWrapping="Wrap" Text="C:\PE__Data\Gandalf10PE.ISO" VerticalAlignment="Top" Width="189" Height="26" ToolTip="Path to PE based ISO" Background="#FF978686" Foreground="#FFDAC813" BorderThickness="0,0,0,0" FontWeight="ExtraBold" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Oblique" SelectionBrush="#FFECEEF0" >
+        <TextBox x:Name="ISO" FontSize="10" FontStretch="UltraExpanded" HorizontalAlignment="Left" Margin="15,24,0,0" TextWrapping="Wrap" Text="C:\PE__Data\Gandalf10PE.ISO" VerticalAlignment="Top" Width="189" Height="21" ToolTip="Path to PE based ISO" Background="#FF978686" Foreground="#FFDAC813" BorderThickness="0,0,0,0" FontWeight="ExtraBold" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Oblique" SelectionBrush="#FFECEEF0" >
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
@@ -51,7 +51,7 @@
         <Button Content="Cleanup MountPoints" HorizontalAlignment="Left" Margin="522,74,0,0" VerticalAlignment="Top" Width="125" Height="29" Click="CleanUpMountPoints" Grid.RowSpan="2"/>
         <Button x:Name="Help" Content="Help" HorizontalAlignment="Left" Margin="627,27,0,0" VerticalAlignment="Top" Click="about" Height="18" Width="33" ToolTip="Software by D. Bertolami" Background="#FFF14040" Foreground="#FFDCCD42" FontSize="8" Padding="1,1,1,1" BorderThickness="3,3,1,1" FontWeight="Bold" FontStyle="Italic"/>
         <Button x:Name="Shell" Content="Shell" HorizontalAlignment="Left" VerticalAlignment="Top" Width="33" Click="SpawnAShell" Height="16" Margin="627,46,0,0" ToolTip="open up a unique instance of my cmd prompt and redirect my cmds in there.." Background="#FF1A42DF" Foreground="#FFE8F316" FontSize="8" Opacity="1" Visibility="Visible" BorderThickness="3,3,1,1" FontStyle="Italic" FontWeight="Bold"/>
-        <Button Content="mount" HorizontalAlignment="Left" Margin="212,24,0,0" VerticalAlignment="Top" Click="MountISO" Height="29" Width="57" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10"/>
+        <Button Content="mount" HorizontalAlignment="Left" Margin="212,24,0,0" VerticalAlignment="Top" Click="MountISO" Height="26" Width="57" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10"/>
         <Button Content="Add drivers" HorizontalAlignment="Left" Margin="436,1,0,0" VerticalAlignment="Top" Width="106" Click="AddPEDrivers" Height="24" Grid.Row="2"/>
         <Button Content="Slipstream updates" HorizontalAlignment="Left" Margin="436,40,0,0" VerticalAlignment="Top" Click="SlipstreamKB" Height="20" Width="108" Grid.Row="2"/>
         <Button Content="add cabs" HorizontalAlignment="Left" Margin="436,77,0,0" VerticalAlignment="Top" ToolTip="these are the optional winPE components..." Height="20" Width="60" Click="addCabs" Grid.Row="2"/>
@@ -60,7 +60,7 @@
         <Button Content="MountedWimInfo" HorizontalAlignment="Left" Margin="550,40,0,0" VerticalAlignment="Top" Width="98" Click="getMountedWIMInfo" Height="20" Grid.Row="2"/>
         <Button Content="Get-Packages" HorizontalAlignment="Left" Margin="548,1,0,0" VerticalAlignment="Top" Width="100" Height="24" Click="getPackages" Grid.Row="2"/>
         <StatusBar Margin="0,209,0,0" Grid.Row="2"/>
-        <Button Content="dismount" HorizontalAlignment="Left" Margin="270,24,0,0" VerticalAlignment="Top" Click="DismountISO" Height="29" Width="73" ToolTip="dismount virtual disk (virtual eject)" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10"/>
+        <Button Content="dismount" HorizontalAlignment="Left" Margin="270,24,0,0" VerticalAlignment="Top" Click="DismountISO" Height="26" Width="73" ToolTip="dismount virtual disk (virtual eject)" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10"/>
         <Button Content="Create ISO" HorizontalAlignment="Left" Margin="348,24,0,0" VerticalAlignment="Top" Click="CreateBootableISO" Height="26" Width="64" RenderTransformOrigin="0.5,0.5" ToolTip="Create a bootable WindowsPE ISO for use in network boot, usb boot, AIOboot ..." Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="5,5,5,5" FontSize="10">
             <Button.RenderTransform>
                 <TransformGroup>
@@ -88,7 +88,7 @@
             <TextBox x:Name="CmdInput" TextWrapping="Wrap" Text="echo this command will be sent to the terminal" Width="535" Height="43" Background="#FF111010" Foreground="#FFEBFF0E" FontWeight="Bold" TextDecorations="Underline" FontSize="22"/>
             <Button Content="Run Command!" Height="45" Width="125" Click="RunDMC"/>
         </StatusBar>
-        <TextBox x:Name="usb" Margin="493,29,162,0" TextWrapping="Wrap" Text="d:" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="19" ToolTip="WIM Index (from wiminfo))!" Background="#FF937E7E" Foreground="#FFE3D22B" FontWeight="Bold" FontSize="8" BorderThickness="0,0,0,0" >
+        <TextBox x:Name="usb" Margin="490,25,165,0" TextWrapping="Wrap" Text="d:" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="20" ToolTip="WIM Index (from wiminfo))!" Background="#FF937E7E" Foreground="#FFE3D22B" FontWeight="Bold" FontSize="8" BorderThickness="0,0,0,0" >
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
