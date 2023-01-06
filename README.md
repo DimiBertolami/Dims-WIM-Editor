@@ -23,8 +23,7 @@ Windows ISO Editor can:
   #### TODO: When Shell is opened, output of buttons should be redirected to shell instead of messagebox!
   
 > A More recent screenshot.. alot has changed today!
-![image](https://user-images.githubusercontent.com/77209365/209286246-e52fd47f-2c38-4a9a-b2de-b64327ebc276.png)
-
+![image](https://user-images.githubusercontent.com/77209365/210468600-f03c3f0c-3ec7-4757-b77b-ea43baa5bdfb.png)
 
 
 
@@ -77,10 +76,13 @@ Windows ISO Editor can:
                            [07]: KB5021233
 ```
 
-Now download these MSU update files manually from https://www.catalog.update.microsoft.com/home.aspx <br />and then slipstream them into your mounted boot.wim
+Now download these MSU update files manually from https://www.catalog.update.microsoft.com/home.aspx <br />and then slipstream them into your mounted install.wim
+since dism accepts a packagepath as a folder also this command is the simpler version of the one below.. i just leave it in there for reference..
+```Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath=C:\Mount```
 
 ```
 for /f "usebackq" %x in (`dir *.msu /b`) do Dism /Image:C:\Mount\MOUNTDIR /Add-Package /PackagePath="%x"
 ```
+
 
 
