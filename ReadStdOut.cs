@@ -33,13 +33,7 @@ namespace DimsISOTweaker
             ps.Start();
 
 
-            Global.RedirectStandardInput = false;
-            //Global.RedirectStandardOutput = false;
-            //Global.RedirectStandardError = false;
-            //ps.WaitForExit();
-            //ps.StartInfo.RedirectStandardInput = RedirectStdIn;
-            //ps.StartInfo.RedirectStandardOutput= true;
-            //ps.StartInfo.RedirectStandardError= true;
+            //Global.RedirectStandardInput = false;
             Global.PID= ps.Id;
             Global.ps = ps;
             return Global.ps;
@@ -47,14 +41,12 @@ namespace DimsISOTweaker
 
         public Process CreateProcess(string args, bool RedirectStandardInput, string binaryExecutable = "cmd.exe")
         {
-            if (Global.PID == 0)
-            {
-                //Process process = new ReadStdOut().readStdOut(false);
-                //MessageBox.Show("arguments: " + Global.Args);
+            //if (Global.PID == 0)
+            //{
                 Process process = new Process();
                 ProcessStartInfo psi = process.StartInfo;
                 psi.FileName = this.binaryExecutable;
-                psi.Arguments = args;
+                psi.Arguments = "color 3e & @echo off & pushd c:\\";
                 psi.UseShellExecute = false;
                 psi.WorkingDirectory = "c:\\";
                 psi.CreateNoWindow = false;
@@ -62,52 +54,13 @@ namespace DimsISOTweaker
 
                 process.StartInfo.RedirectStandardInput = true;
                 process.Start();
-                //psi.RedirectStandardInput = true;
-                process.StandardInput.WriteLine(Global.Args);
-                process.StartInfo.RedirectStandardInput = false;
+                process.StandardInput.WriteLine(psi.Arguments);
 
-                //MessageBox.Show("pid: " + process.Id);
+
                 Global.PID = process.Id;
                 Global.ps = process;
-                //Global.RedirectStandardInput = RedirectStdIn;
-                //Global.RedirectStandardOutput = false;
-                //Global.RedirectStandardError = false;
                 return process;
-            }
-            else
-            {
-                Process process = Global.ps;
-                //ProcessStartInfo psi = process.StartInfo;
-                process.StartInfo.RedirectStandardInput = true;
-                process.StandardInput.WriteLine(args);
-                //process.StartInfo.RedirectStandardInput = false;
-                return process;
-            }
         }
 
-        internal void CreateCommandOnPid(int pID, string args, bool RedirectStandardInput = false)
-        {
-            Global.PID = PID;
-            if (PID == 0)
-            {
-                this.CreateProcess(" /k color 7c & title Wim-Editor & echo off & pushd c:\\AMDimPe\\", RedirectStandardInput);
-            }
-            else
-            {
-                var x = new ReadStdOut();
-                x.CreateCommandOnPid(PID, "color 7c & title Wim-Editor & echo off & pushd c:\\AMDimPe\\", RedirectStandardInput = true);
-
-            }
-            var process = new Process();
-            var psi = new ProcessStartInfo();
-            psi.FileName = "cmd.exe";
-            psi.RedirectStandardInput = true;
-            psi.UseShellExecute = false;
-            psi.WorkingDirectory = "c:\\Mount";
-            process.StartInfo = psi;
-            process.Start();
-            process.StandardInput.WriteLine("echo hello test!");
-            psi.RedirectStandardInput = RedirectStandardInput;
-        }
     }
 }

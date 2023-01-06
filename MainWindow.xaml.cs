@@ -36,92 +36,49 @@ namespace DimsISOTweaker
     public partial class MainWindow : Window
     {
         private string StandardArguments = Global.Args;
-        private object val;
 
-        public int ID { get; set; } = 0;
 
         public MainWindow()
         {
             InitializeComponent();
         }
+
         private void SpawnAShell(object sender, RoutedEventArgs e)
         {
-            if (Global.PID == 0)
+            if(Global.PID== 0) 
             {
-                Global.Args = "@echo off";
-                Process x = new ReadStdOut().CreateProcess(Global.Args, false, StandardArguments);
-                x.StandardInput.WriteLine("title Dim's PE Shell & cls");
-                x.StartInfo.RedirectStandardInput = false;
-                Global.ps = x;
+                Process x = new ReadStdOut().CreateProcess("echo on", true);
+                x.StandardInput.WriteLine("@echo a new shell.. & echo off & color 7e & cls");
+                Global.PID = x.Id;
             }
             else
             {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("@echo off & title Dim's PE Shell & cls");
-                x.StartInfo.RedirectStandardInput = false;
+                Global.Args = "@echo on & color 7e & cls";
+                x.StandardInput.WriteLine(Global.Args);
             }
         }
 
 
         public void MountISO(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("echo Mounting ISO...", false, StandardArguments);
-                x.StandardInput.WriteLine("@echo off & powershell - command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps; 
                 Global.Args = "powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"";
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         public void DismountISO(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Global.Args = "@echo off & powershell -command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"";
-                Process x = new ReadStdOut().CreateProcess("echo Dis-Mounting ISO...", false, StandardArguments);
-                x.StandardInput.WriteLine(Global.Args);
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
                 Global.Args = "powershell -command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"";
-                //x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
-                //x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         public void CopyWIM(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("echo creating local PE Environment...", false, StandardArguments);
-                x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
-                x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
-                x.StartInfo.RedirectStandardInput = false;
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                //x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
                 x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void cpWIM(object sender, RoutedEventArgs e)
@@ -135,92 +92,36 @@ namespace DimsISOTweaker
                 if (File.Exists(drives[i].Name + "Sources\\boot.wim"))
                 {
                     usb.Text = drives[i].Name;
-                    usb.FontSize = 13;
-                    FileInfo fileInfo = new FileInfo(MountPoint.Text + "\\media\\sources\\boot.wim");
-                    fileInfo.IsReadOnly = false;
+                    File.Copy(usb.Text + "Sources\\boot.wim",
+                             MountPoint.Text + "\\BOOTWIM\\boot.wim", true);
                     File.Copy(usb.Text + "Sources\\boot.wim",
                              MountPoint.Text + "\\media\\sources\\boot.wim", true);
-                    //File.Copy(usb.Text + "Sources\\boot.wim",
-                    //         MountPoint.Text + "\\media\\sources\\boot.wim", true);
-                    int PID = Global.PID;
-                    if (PID == 0)
-                    {
-                        Process x = new ReadStdOut().CreateProcess("echo creating local PE Environment...", false, StandardArguments);
-                        x.StandardInput.WriteLine("echo off & echo boot.wim copied from gandalfPE");
-                        x.StartInfo.RedirectStandardInput = false;
-                        Global.ps = x;
-                    } else
-                    {
+                    FileInfo fileInfo = new FileInfo(MountPoint.Text + "\\media\\sources\\boot.wim");
+                    fileInfo.IsReadOnly = false;
                         Process x = Global.ps;
-                        x.StartInfo.RedirectStandardInput = true;
-                        x.StandardInput.WriteLine("echo boot.wim copied from gandalfPE");
-                        x.StartInfo.RedirectStandardInput = false;
-                    }
+                        x.StandardInput.WriteLine("echo boot.wim copied");
                 }
             }
 
         }
 
-        //}
         public void getWIMInfo(object sender, RoutedEventArgs e)
         {
-            //new ReadStdOut().CreateProcess(" /c DISM.exe /Get-WimInfo /WimFile:" + MountPoint.Text + "\\BootWIM\\boot.wim", _contentLoaded, StandardArguments);
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Global.Args = "DISM.exe /Get-WimInfo /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim";
-                Process x = new ReadStdOut().CreateProcess("@echo off & cls", false, StandardArguments);
-                x.StandardInput.WriteLine(Global.Args);
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
                 Global.Args = "DISM.exe /Get-WimInfo /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim";
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
-                x.StartInfo.RedirectStandardInput = false;
-            }
-
-
         }
         public void MountWIM(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"";
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Mounting WIM", false, StandardArguments);
-                x.StandardInput.WriteLine(Global.Args);
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
                 Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"" ;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
         public void AddPEDrivers(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"";
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Adding PE Drivers...", false, StandardArguments);
-                x.StandardInput.WriteLine(Global.Args);
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
                 Global.Args = "DISM /mount-wim /WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT\"";
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
         void SlipstreamKB(object sender, RoutedEventArgs e)
         {
@@ -229,44 +130,18 @@ namespace DimsISOTweaker
             // Just make sure you write down which KB-Nrs.msu's you install. then download the correct
             // update file from https://www.catalog.update.microsoft.com/home.aspx and slipstream it into
             // your installation source like i did here.. 
-            Global.Args = "for /f \"usebackq\" %x in (`dir " + MountPoint.Text + "\\*.msu /b`) do wusa " +
+            Global.Args = "echo for /f \"usebackq\" %x in (`dir " + MountPoint.Text + "\\*.msu /b`) do wusa " +
                 MountPoint.Text + "\\%x /quiet /norestart";
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo slipstreaming updates...", false, StandardArguments);
-                x.StandardInput.WriteLine(Global.Args);
-                x.StandardInput.WriteLine("for /f \"usebackq\" %x in (`dir " + MountPoint.Text +
-                    "\\*.msu /b`) do dism /Image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath=%x");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine(Global.Args);
-                x.StandardInput.WriteLine("for /f \"usebackq\" %x in (`dir " + MountPoint.Text +
-                    "\\*.msu /b`) do dism /Image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath=%x");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                x.StandardInput.WriteLine("echo for /f \"usebackq tokens=*\" %x in (`dir " + MountPoint.Text +
+                    "\\*.msu /b`) do dism /Image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath=\"%x\"");
         }
 
         private void UnMountWIM(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Unmounting WIM... (committing changes)", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" + MountPoint.Text + "\\MOUNT /commit");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" + MountPoint.Text + "\\MOUNT /commit");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void about(object sender, RoutedEventArgs e)
@@ -276,494 +151,185 @@ namespace DimsISOTweaker
 
         private void addCabs(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Adding optional components...", false, StandardArguments);
-                // pushd C:\ESD\cabs\neutral 
-                // dism / image:C:\MOUNT\MOUNTDIR / Add - Package / PackagePath:C:\ESD\cabs\neutral
-                // dism /image:C:\MOUNT\MOUNTDIR /Add-Package /PackagePath:C:\ESD\cabs\en-us
-                x.StandardInput.WriteLine("pushd C:\\ESD\\cabs\\neutral");
-                x.StandardInput.WriteLine("dism /image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath:C:\\ESD\\cabs\\neutral");
-                x.StandardInput.WriteLine("cd .. & cd en-us");
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath:C:\\ESD\\cabs\\en-us");
-                x = Global.ps;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("pushd C:\\ESD\\cabs\\neutral");
                 x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath:C:\\ESD\\cabs\\neutral");
                 x.StandardInput.WriteLine("cd .. & cd en-us");
                 x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\MOUNT /Add-Package /PackagePath:C:\\ESD\\cabs\\en-us");
-                //x.StartInfo.RedirectStandardInput = false;
-            }
         }
         private void AddCabz(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo adding optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
-                x.StandardInput.WriteLine("cd en-us");
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                //x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
                 x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
                 x.StandardInput.WriteLine("cd en-us");
                 x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /Add-Package /PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us");
-                //x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
 
         private void UnMountWIMDiscard(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Unmounting WIM... (discarding changes)", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" + MountPoint.Text + "\\MOUNT /discard");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" + MountPoint.Text + "\\MOUNT /discard");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void CleanUpMountPoints(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo cleaning MountPoints...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /Cleanup-Mountpoints");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /Cleanup-Mountpoints");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void CleanupWim(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo cleaning WIM...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /Cleanup-Wim");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /Cleanup-Wim");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void getMountedWIMInfo(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting Mounted WIM details...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /Get-MountedWimInfo");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /Get-MountedWimInfo");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void getPackages(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting installed optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /image:" + MountPoint.Text + "\\MOUNT /Get-Packages");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /image:" + MountPoint.Text + "\\MOUNT /Get-Packages");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void CleanupIMG(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo cleaning up image...", false, StandardArguments);
-                x.StandardInput.WriteLine("Dism /Image:" + MountPoint.Text + "\\MOUNT /cleanup-image /StartComponentCleanup /ResetBase");
-                x.StandardInput.WriteLine("Dism /Unmount-Image /MountDir:" + MountPoint.Text + "\\mount /Commit");
-                //x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\install.wim /SourceIndex:1 /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\install_cleaned.wim");
-                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:1 /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\boot_cleaned.wim");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("Dism /Image:" + MountPoint.Text + "\\MOUNT /cleanup-image /StartComponentCleanup /ResetBase");
                 x.StandardInput.WriteLine("Dism /Unmount-Image /MountDir:" + MountPoint.Text + "\\mount /Commit");
-                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:1 /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\boot_cleaned.wim");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:" + Index.Text + " /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\boot_cleaned.wim");
+                if(File.Exists(MountPoint.Text + "\\media\\sources\\install.wim")) 
+                {
+                    x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\install.wim /SourceIndex:" + Index.Text + " /DestinationImageFile:" + MountPoint.Text + "\\BootWIM\\install_cleaned.wim");
+                }
         }
 
         private void adksetup(object sender, RoutedEventArgs e)
         {
             if (Directory.Exists("c:\\ADK")) { return; }
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Installing ADK...", false, StandardArguments);
-                x.StandardInput.WriteLine("c:\\pe__data\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("c:\\pe__data\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                x.StandardInput.WriteLine("Installers\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
+                x.StandardInput.WriteLine("Windows Assessment and Deployment Kit Installed!");
         }
 
         private void ADKPESetup(object sender, RoutedEventArgs e)
         {
             if (Directory.Exists("C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment")) { return; }
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Installing ADK PE Addon...", false, StandardArguments);
-                x.StandardInput.WriteLine("c:\\pe__data\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("c:\\pe__data\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                x.StandardInput.WriteLine("Installers\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q");
+                x.StandardInput.WriteLine("PE Addon for Windows Assessment and Deployment Kit Installed!");
         }
 
 
         private void adkMountWIM(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo Installing ADK Mounting WIM ...", false, StandardArguments);
-                x.StandardInput.WriteLine("DISM /mount-wim /wimfile:" + MountPoint.Text + "\\media\\sources\\boot.wim" +
-                                                " /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("DISM /mount-wim /wimfile:" + MountPoint.Text + "\\media\\sources\\boot.wim" +
-                                                " /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                    " /index:" + Index.Text +
+                    " /MountDir:" + MountPoint.Text +
+                    "\\MOUNT");
         }
 
         private void adkCopyPE(object sender, RoutedEventArgs e)
         {
-            //copype amd64 C:\Mount
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo copying ADK environment...", false, StandardArguments);
-                //x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\" & copype %processor_architecture% " + MountPoint.Text);                
-                x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
-                x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
-                Global.ps = x;
-            }
-            else
-            {
-                Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
-                x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
-                x.StartInfo.RedirectStandardInput = false;
-            }
+            Process x = Global.ps;
+            x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & call DandISetEnv.bat");
+            x.StandardInput.WriteLine("cd .. & cd Windows Preinstallation Environment & copype %processor_architecture% " + MountPoint.Text);
         }
 
         private void vOS(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo copying Validation OS Wim File...", false, StandardArguments);
-                x.StandardInput.WriteLine("copy c:\\PE__Data\\ValidationOS.wim " + MountPoint.Text + "\\media\\sources\\boot.wim /y");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("copy c:\\PE__Data\\ValidationOS.wim " + MountPoint.Text + "\\media\\sources\\boot.wim /y");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                x.StandardInput.WriteLine("copy c:\\Installers\\ValidationOS.wim " + MountPoint.Text + "\\media\\sources\\boot.wim /y");
         }
 
         private void getADKPackages(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /get-Packages");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount  /get-Packages");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                x.StandardInput.WriteLine("dism /Image:" + MountPoint.Text + "\\mount /get-Packages");
         }
 
         private void cleanResetBase(object sender, ContextMenuEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("Dism /Image:c:\\PE%processor_architecture%\\mount /cleanup-image /StartComponentCleanup /ResetBase");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("Dism /Image:c:\\PE%processor_architecture%\\mount /cleanup-image /StartComponentCleanup /ResetBase");
-                x.StartInfo.RedirectStandardInput = false;
-            }            
         }
 
         private void UnmountWIMAdk(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" +
-                             MountPoint.Text +
-                             "\\MOUNT /commit");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /unmount-wim /mountdir:" +
                              MountPoint.Text +
                              "\\MOUNT /commit");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void ExportWIMAdk(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:1 /DestinationImageFile:" + MountPoint.Text + "\\media\\sources\\boot2.wim");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:1 /DestinationImageFile:" + MountPoint.Text + "\\media\\sources\\boot2.wim");
-                x.StartInfo.RedirectStandardInput = false;
-            }
-            File.Move(MountPoint.Text + "\\media\\sources\\boot.wim", MountPoint.Text + "\\media\\sources\\boot.old");
-            File.Move(MountPoint.Text + "\\media\\sources\\boot2.wim", MountPoint.Text + "\\media\\sources\\boot.wim");
+                x.StandardInput.WriteLine("Dism /Export-Image /SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim /SourceIndex:" + Index.Text + " /DestinationImageFile:" + MountPoint.Text + "\\media\\sources\\boot2.wim");
+                File.Move(MountPoint.Text + "\\media\\sources\\boot.wim", MountPoint.Text + "\\media\\sources\\boot.old");
+                File.Move(MountPoint.Text + "\\media\\sources\\boot2.wim", MountPoint.Text + "\\media\\sources\\boot.wim");
         }
 
         private void getADKWIMNFO(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:1");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
-                x.StandardInput.WriteLine("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:1");
-                x.StartInfo.RedirectStandardInput = false;
-            }
+                x.StandardInput.WriteLine("DISM /GET-WIMINFO /WIMFILE:" + MountPoint.Text + "\\MEDIA\\SOURCES\\BOOT.WIM /INDEX:" + Index.Text);
         }
 
         private void CreateBootableISO(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo getting optional components...", false, StandardArguments);
-                x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\windows Preinstallation Environment");
-                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /ISO " + MountPoint.Text + " " + MountPoint.Text + "\\newPE.iso /y");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\windows Preinstallation Environment");
                 x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /ISO " + MountPoint.Text + " " + MountPoint.Text + "\\newPE.iso");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void CreateBootableUsb(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo building bootable usb stick...", false, StandardArguments);
-                x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\"");
-                x.StandardInput.WriteLine("MakeWinPEMedia.cmd /UFD " + MountPoint.Text + " " + usb.Text);
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\"");
                 x.StandardInput.WriteLine("MakeWinPEMedia.cmd /UFD " + MountPoint.Text + " " + usb.Text); 
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
         private void UnmountAdkIMG(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & echo unmounting ADK...", false, StandardArguments);
-                x.StandardInput.WriteLine("dism /unmount-wim /MountDir:" + MountPoint.Text + "\\MOUNT /COMMIT");
-                Global.ps = x;
-            }
-            else
-            {
                 Process x = Global.ps;
-                x.StartInfo.RedirectStandardInput = true;
                 x.StandardInput.WriteLine("dism /unmount-wim /MountDir:" + MountPoint.Text + "\\MOUNT /COMMIT");
-                x.StartInfo.RedirectStandardInput = false;
-            }
         }
 
 
         private void StdInChange(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
             if (StdIn.IsChecked == true)
             {
-                Global.RedirectStandardInput = true;
-
-                if (PID == 0)
-                {
-                    Process x = new ReadStdOut().CreateProcess("@echo off & echo off & echo StdIn test", true, StandardArguments);
-                    x.StartInfo.RedirectStandardInput = true;
-                    Global.ps = x;
-                }
-                else
-                {
-                    Process x = Global.ps;
-                    x.StandardInput.WriteLine("@echo redirect std input:" + Global.RedirectStandardInput);
-                    x.StartInfo.RedirectStandardInput = true;
-                }
+                //Process x = Global.ps;
+                //x.StartInfo.UseShellExecute = false;
+                //x.StartInfo.RedirectStandardInput = true;
+                //var psi = x.StartInfo;
+                //MessageBox.Show(psi.RedirectStandardInput.ToString());
+                //psi.RedirectStandardInput = true;
+                //x.StartInfo.RedirectStandardInput = true;
+                //x.StandardInput.WriteLine("echo redirect standard input: Yes!");
             }
             else
             {
-                Global.RedirectStandardInput = false;
-
-                if (PID == 0)
-                {
-                    Process x = new ReadStdOut().CreateProcess("@echo off & echo off & echo Standard Input change: ", false, StandardArguments);
-                    x = Global.ps;
-                    x.StandardInput.WriteLine("@echo redirect std input:" + x.StartInfo.RedirectStandardInput);
-                    x.StartInfo.RedirectStandardInput = false;
-                }
-                else
-                {
-                    Process x = Global.ps;
-                    x.StandardInput.WriteLine("@echo redirect std input:" + x.StartInfo.RedirectStandardInput);
-                    x.StartInfo.RedirectStandardInput = false;
-                }
-
+                //Process x = Global.ps;
+                //var psi = x.StartInfo;
+                //psi.RedirectStandardInput = false;
+                //x.StartInfo.RedirectStandardInput = false;
+                //x.StandardInput.WriteLine("@echo redirect standard input: Nope!");
             }
         }
 
-        private void redirectCMD(object sender, TouchEventArgs e)
+        private void RunDMC(object sender, RoutedEventArgs e)
         {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & cls", false, StandardArguments);
-                x.StandardInput.WriteLine(cmdInput.Text);
-                Global.ps = x;
-            }
-            else
-            {
-                Process x = Global.ps;
-                x.StandardInput.WriteLine(cmdInput.Text);
-            }
-
-        }
-
-        private void runDMC(object sender, RoutedEventArgs e)
-        {
-            int PID = Global.PID;
-            if (PID == 0)
-            {
-                Process x = new ReadStdOut().CreateProcess("@echo off & cls", false, StandardArguments);
-                x.StandardInput.WriteLine(cmdInput.Text);
-                Global.ps = x;
-            }
-            else
-            {
-                Process x = Global.ps;
-                x.StandardInput.WriteLine(cmdInput.Text);
-            }
+            Process x = Global.ps;
+            x.StandardInput.WriteLine(CmdInput.Text + ">nul");
         }
     }
 }
