@@ -1,6 +1,8 @@
 # Dims-WIM-Editor
 
-quick dotnet WPF gui app
+Here's a typical set of tasks/steps that you would need to do to create a bootable PE disk, this app is also designed to quickly upgrade this simple boot disk to become a custom windows installation disk.
+![image](https://user-images.githubusercontent.com/77209365/213132445-6be93add-6bf7-4726-8916-22b2bb2dcc1b.png)
+
 
 > This is the folder structure I used.. you do what you want offcourse..
 ![image](https://user-images.githubusercontent.com/77209365/208245447-a03cd392-b8e0-44aa-88bf-907faf1bac00.png)
