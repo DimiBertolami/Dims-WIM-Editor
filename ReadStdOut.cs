@@ -21,7 +21,7 @@ namespace DimsISOTweaker
         public bool RedirectStandardInput { get; private set; }
 
 
-        public Process CreateProcess(string args, bool RedirectStandardInput, string binaryExecutable = "cmd.exe")
+        public Process CreateProcess(bool RedirectStandardInput = true, string binaryExecutable = "cmd.exe")
         {
             string Args = string.Empty;
             Process process = new Process();
@@ -29,28 +29,22 @@ namespace DimsISOTweaker
             psi.FileName = binaryExecutable;
             if (process.StartInfo.RedirectStandardInput == true)
             {
-                Args = "color 56 & @echo off & pushd c:\\";
+                Args = "color 56 & @echo off & pushd c:\\PE__Data";
             }
             else
             {
-                Args = "color 9e & @echo off & pushd c:\\";
+                Args = "color 9e & @echo off & pushd c:\\PE__Data";
             }
             psi.Arguments = Args;
             psi.UseShellExecute = false;
             psi.WorkingDirectory = "c:\\pe__data";
             psi.CreateNoWindow = false;
-            Global.WindowStyle = Global.WindowStyle;
             psi.WindowStyle = Global.WindowStyle;
-
             process.StartInfo.RedirectStandardInput = RedirectStandardInput;
             process.Start();
-
-            WebClient webClient = new WebClient();
-            Global.webClient = webClient;
             Global.PID = process.Id;
             Global.ps = process;
             return process;
         }
-
     }
 }

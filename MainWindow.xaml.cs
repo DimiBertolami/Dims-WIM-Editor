@@ -46,7 +46,22 @@ namespace DimsISOTweaker
 
         public MainWindow()
         {
+
             InitializeComponent();
+            if (Global.PID == 0)
+            {
+                Process x1 = new ReadStdOut().CreateProcess();
+                MainScreen.Left = (((uint)System.Windows.SystemParameters.PrimaryScreenWidth)-MainScreen.Width-23);
+                MainScreen.Top = 35;
+                x1.StartInfo.RedirectStandardInput = true;
+                x1.StartInfo.UseShellExecute = false;
+                x1.StartInfo.CreateNoWindow = false;
+                x1.StandardInput.WriteLine("color 56 & cls");
+                Global.PID = x1.Id;
+                Global.ps = x1;
+                Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth)-((int)MainScreen.ActualWidth)-23;
+                Global.PositionY = 35;
+            }
         }
 
         void MountISO(object sender, RoutedEventArgs e)
@@ -307,15 +322,6 @@ namespace DimsISOTweaker
             }
         }
 
-        void EchoStatus(object sender, RoutedEventArgs e)
-        {
-            Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
-            {
-                x.StandardInput.WriteLine("color 09 & cls");
-            }
-        }
-
         void ExportWIMAdk(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
@@ -532,48 +538,33 @@ namespace DimsISOTweaker
             }
         }
 
-        void ShowDosBox(object sender, RoutedEventArgs e)
+        void StdInChange(object sender, RoutedEventArgs e)
         {
             if (Global.PID == 0)
             {
-                Process x1 = new ReadStdOut().CreateProcess("", true);
-                MainScreen.Left = (((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - MainScreen.Width -23);
-                MainScreen.Top = 35;
-                x1.StartInfo.RedirectStandardInput = true;
-                x1.StartInfo.UseShellExecute = false;
-                x1.StartInfo.CreateNoWindow = Global.CreateNoWindow;
-                x1.StandardInput.WriteLine("color 56 & cls");
-                Global.PID = x1.Id;
-                Global.ps = x1;
-                Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - (int)MainScreen.ActualWidth - 23;
-                Global.PositionY = 35;
+                Process x1 = new ReadStdOut().CreateProcess();
             }
             else
             {
-                Process x1 = Global.ps;
-            }
-        }
-
-        void StdInChange(object sender, RoutedEventArgs e)
-        {
-            Process x = Global.ps; MainScreen.Topmost = true;
-            ProcessStartInfo psi = x.StartInfo;
-            if (Global.RedirectStandardInput == true)
-            {
-                x.Kill();
-                Process x1 = new ReadStdOut().CreateProcess("", false);
-                Global.ps = x1;
-                StdInButton.Background = Brushes.Green;
-                Global.RedirectStandardInput = false;
-            }
-            else
-            {
-                x.Kill();
-                Process x1 = new ReadStdOut().CreateProcess("", true);
-                StdInButton.Background = Brushes.Red;
-                x1.StandardInput.WriteLine("color 56 & title the purple terminal is controlled by the gui .. The blue one by you & cls");
-                Global.ps = x1;
-                Global.RedirectStandardInput = true;
+                Process x = Global.ps; MainScreen.Topmost = true;
+                ProcessStartInfo psi = x.StartInfo;
+                if (Global.RedirectStandardInput == true)
+                {
+                    x.Kill();
+                    Process x1 = new ReadStdOut().CreateProcess(false);
+                    Global.ps = x1;
+                    StdInButton.Background = Brushes.Green;
+                    Global.RedirectStandardInput = false;
+                }
+                else
+                {
+                    x.Kill();
+                    Process x1 = new ReadStdOut().CreateProcess();
+                    StdInButton.Background = Brushes.Red;
+                    x1.StandardInput.WriteLine("color 56 & title the purple terminal is controlled by the gui .. The blue one by you & cls");
+                    Global.ps = x1;
+                    Global.RedirectStandardInput = true;
+                }
             }
         }
 
@@ -600,22 +591,24 @@ namespace DimsISOTweaker
         private void StdOutClick(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            //MessageBox.Show("WindowStyle" + Global.WindowStyle);
             if (Global.WindowStyle== ProcessWindowStyle.Maximized) 
             {
                 Global.WindowStyle = ProcessWindowStyle.Minimized;
+                x.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
                 x.StartInfo.CreateNoWindow = false;
+                x.Kill();
+                x.Start();
                 Out.Background = Brushes.Red;
             }
             else
             {
                 Global.WindowStyle = ProcessWindowStyle.Maximized;
-                Out.Background = Brushes.Green;
+                x.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
                 x.StartInfo.CreateNoWindow = false;
+                x.Kill();
+                x.Start();
+                Out.Background = Brushes.Green;
             }
-            x.StartInfo.WindowStyle = Global.WindowStyle;
-            x.Kill();
-            x.Start();
         }
 
         void OnTopAgain(object sender, EventArgs e)
@@ -678,11 +671,5 @@ namespace DimsISOTweaker
             {
             }
         }
-
-        private void ShowDosBox(object sender, EventArgs e)
-        {
-
-        }
     }
 }
-
