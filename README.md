@@ -1,5 +1,8 @@
 # Dims-WIM-Editor
 
+![image](https://user-images.githubusercontent.com/77209365/216536611-120c3b45-de29-433e-86ff-2692a1a79787.png)
+
+
 Here's a typical set of tasks/steps that you would need to do to create a bootable PE disk, this app is also designed to quickly upgrade this simple boot disk to become a custom windows installation disk.
 ![image](https://user-images.githubusercontent.com/77209365/213132445-6be93add-6bf7-4726-8916-22b2bb2dcc1b.png)
 
