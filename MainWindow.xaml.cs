@@ -242,17 +242,11 @@ namespace DimsISOTweaker
                 }
                 if (Directory.Exists("c:\\ADK"))
                 {
-                    MessageBox.Show("c:\\adk exists! I will simply show the commands I would have used otherwise...");
-                    x.StandardInput.WriteLine("echo Windows Assessment and Deployment Kit Installation started!");
-                    x.StandardInput.WriteLine("echo c:\\pe__data\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
-                    x.StandardInput.WriteLine("echo Windows Assessment and Deployment Kit Installed!");
                     return;
                 }
                 else
                 {
-                    x.StandardInput.WriteLine("echo Windows Assessment and Deployment Kit Installation started!");
                     x.StandardInput.WriteLine("c:\\pe__data\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
-                    x.StandardInput.WriteLine("echo Windows Assessment and Deployment Kit Installed!");
                 }
             }
         }
@@ -271,7 +265,7 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Image:" + MountPoint.Text + "\\MOUNT /cleanup-image /StartComponentCleanup /ResetBase /defer");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Image:" + MountPoint.Text + "\\MOUNT /cleanup-image /StartComponentCleanup /ResetBase");
             }
         }
 
@@ -318,7 +312,7 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("echo off & cls");
+                x.StandardInput.WriteLine("color 09 & cls");
             }
         }
 
@@ -603,7 +597,7 @@ namespace DimsISOTweaker
             }
         }
 
-        void WindowStyleChg(object sender, RoutedEventArgs e)
+        private void StdOutClick(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
             //MessageBox.Show("WindowStyle" + Global.WindowStyle);
@@ -678,10 +672,16 @@ namespace DimsISOTweaker
                 if (!File.Exists("C:\\Program Files\\qemu\\qemu-system-x86_64.exe"))
                 { x.StandardInput.WriteLine("powershell -command \"winget install qemu\""); }
                 x.StandardInput.WriteLine("pushd C:\\Program Files\\qemu & " +
-                                          "start /b qemu-system-x86_64.exe -boot d -cdrom \"" + ISO.Text + "\" -m 12000");
-            } else
+                                          "start qemu-system-x86_64.exe -boot d -cdrom \"" + ISO.Text + "\" -m 8000");
+            } 
+            else
             {
             }
+        }
+
+        private void ShowDosBox(object sender, EventArgs e)
+        {
+
         }
     }
 }
