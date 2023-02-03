@@ -25,6 +25,14 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Dims-WIM-Editor\WinISOEditor.csproj">
+      <Name>WinISOEditor</Name>
+      <Project>{bd24a1b3-2543-4f3d-bb9f-fce6181fe7e6}</Project>
+      <Private>True</Private>
+      <OutputsToImport>PublishOutput#FolderProfile#C:\Users\Admin\Desktop\Dims-WIM-Editor\MSI#Release#Any CPU#FileSystem######</OutputsToImport>
+    </ProjectReference>
+  </ItemGroup>
   <Target Name="Build">
     <Error Text="This project requires Advanced Installer tool. Please download it from https://www.advancedinstaller.com/download.html" />
   </Target>
