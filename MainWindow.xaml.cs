@@ -286,6 +286,8 @@ namespace DimsISOTweaker
 
         void CreateBootableISO(object sender, RoutedEventArgs e)
         {
+            
+            
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
@@ -604,7 +606,7 @@ namespace DimsISOTweaker
         void WindowStyleChg(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            MessageBox.Show("WindowStyle" + Global.WindowStyle);
+            //MessageBox.Show("WindowStyle" + Global.WindowStyle);
             if (Global.WindowStyle== ProcessWindowStyle.Maximized) 
             {
                 Global.WindowStyle = ProcessWindowStyle.Minimized;
