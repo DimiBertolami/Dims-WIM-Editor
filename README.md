@@ -10,8 +10,6 @@ Here's a typical set of tasks/steps that you would need to do to create a bootab
 > This is the folder structure I used.. you do what you want offcourse..
 ![image](https://user-images.githubusercontent.com/77209365/208245447-a03cd392-b8e0-44aa-88bf-907faf1bac00.png)
 
-> in case you want to see only the dos commands I initially used:
-https://github.com/DimiBertolami/Dims-WIM-Editor/blob/main/doscmds.txt
 
 Windows ISO Editor can: 
   - silent download + install windows Assesment and deployment kit
@@ -23,9 +21,6 @@ Windows ISO Editor can:
   - slipstream updates in iso
   - Cleanup Corrupted WIM Mountpoints
   - Cleanup WIM
-  - Open up a shell prompt (*)
-  
-  #### TODO: When Shell is opened, output of buttons should be redirected to shell instead of messagebox!
   
 > A More recent screenshot.. alot has changed today!
 ![image](https://user-images.githubusercontent.com/77209365/213092160-7a021c7c-d36d-44d1-a342-464efdba2de9.png)
