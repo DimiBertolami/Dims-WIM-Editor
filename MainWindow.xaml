@@ -1,4 +1,4 @@
-﻿<Window x:Class="DimsISOTweaker.MainWindow"
+﻿<Window x:Name="MainScreen" x:Class="DimsISOTweaker.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,8 @@
         Height="170" 
         Width="600"
         ResizeMode="CanMinimize"
-        WindowStartupLocation="Manual" Left="1250" Top="30">
+        WindowStartupLocation="Manual" Left="30" Top="30" Deactivated="OnTopAgain">
+
     <Grid ContextMenuClosing="cleanResetBase" Height="141" VerticalAlignment="Center">
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
@@ -20,6 +21,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Rectangle Height="124" Margin="2,0,387,0" Stroke="Black" VerticalAlignment="Center"/>
+        <Rectangle HorizontalAlignment="Left" Height="23" Margin="7,53,0,0" Stroke="Black" VerticalAlignment="Top" Width="188" Fill="#FF6B5555"/>
         <Rectangle HorizontalAlignment="Left" Height="124" Margin="203,0,0,0" Stroke="Black" VerticalAlignment="Center" Width="380"/>
         <Rectangle HorizontalAlignment="Left" Height="39" Margin="625,26,0,0" Stroke="#FFA4A4AC" VerticalAlignment="Top" Width="37" Fill="#FF989898" Visibility="Hidden"/>
         <Button Content="DRIVERS" HorizontalAlignment="Left" Margin="361,78,0,0" VerticalAlignment="Top" Width="64" Click="AddPEDrivers" Height="18" Padding="1,-3.3,1,1" Background="#FFCEDFC9" ToolTip="integrate drivers into your images "/>
@@ -50,10 +52,10 @@
         <Button Content="Mounted WIM" HorizontalAlignment="Left" Margin="283,32,0,0" VerticalAlignment="Top" Width="107" Click="getMountedWIMInfo" Height="20" ToolTip="Get MOUNTED BOOT.Wim info" BorderThickness="1,1,1,1" Padding="1,-5,1,1"/>
         <Button Content="Max Scratchspace" HorizontalAlignment="Left" Margin="361,100,0,0" VerticalAlignment="Top" Width="104" Height="26" Click="MaxScratch" Padding="1,-3,1,1" ToolTip="maximize scratchspace to 512Mb"/>
         <Button Content="Mount" HorizontalAlignment="Left" Margin="256,78,0,0" VerticalAlignment="Top" Width="41" Height="18" Click="MntInstallWim" Padding="1,-2,1,1" Background="#FFCAD7C7" RenderTransformOrigin="0.233,0.529" ToolTip="mount install.wim"/>
-        <Button x:Name="UnMountInstallWim" Content="UnMount" HorizontalAlignment="Left" Margin="302,78,0,0" VerticalAlignment="Top" Width="55" ToolTip="Mount ADK install.wim" Height="18" Click="UnmountWIMAdk" RenderTransformOrigin="0.667,0.36" FontStretch="UltraExpanded" BorderThickness="1,1,1,1" Padding="1,-3,1,1" Background="#FFCDDCCA"/>
+        <Button x:Name="UnMountInstallWim" Content="UnMount" HorizontalAlignment="Left" Margin="302,78,0,0" VerticalAlignment="Top" Width="55" ToolTip="unmount install.wim" Height="18" Click="UnmountWIMAdk" RenderTransformOrigin="0.667,0.36" FontStretch="UltraExpanded" BorderThickness="1,1,1,1" Padding="1,-3,1,1" Background="#FFCDDCCA"/>
         <Grid HorizontalAlignment="Left" Margin="8,6,0,0" VerticalAlignment="Top" Height="47" Width="197">
             <Grid HorizontalAlignment="Center" Height="29" Margin="0,18,0,0" VerticalAlignment="Top" Width="197">
-                <TextBox x:Name="ISO" FontStretch="UltraExpanded" HorizontalAlignment="Left" TextWrapping="Wrap" Text="C:\PE__Data\Gandalf10PE.ISO" VerticalAlignment="Top" Width="185" Height="18" ToolTip="Path to PE based ISO" Background="#FF0E1102" Foreground="#FFF1E417" BorderThickness="1,1,1,1" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Italic" SelectionBrush="#FFECEEF0" BorderBrush="#FF1DE8CB" Margin="-1,-18,0,0" FontWeight="Bold" >
+                <TextBox x:Name="ISO" FontStretch="UltraExpanded" HorizontalAlignment="Left" TextWrapping="Wrap" Text="C:\MOUNT\newPE.iso" VerticalAlignment="Top" Width="185" Height="18" ToolTip="Path to PE based ISO" Background="#FF0E1102" Foreground="#FFF1E417" BorderThickness="1,1,1,1" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" FontStyle="Italic" SelectionBrush="#FFECEEF0" BorderBrush="#FF1DE8CB" Margin="-1,-18,0,0" FontWeight="Bold" >
                     <TextBox.Effect>
                         <DropShadowEffect/>
                     </TextBox.Effect>
@@ -89,10 +91,10 @@
         <Button Content="Discard" HorizontalAlignment="Left" Margin="525,12,0,0" VerticalAlignment="Top" Width="55" Height="17" Click="UnMountWIMDiscard" ToolTip="Unmount Boot.wim and discard changes" Padding="0,-3,0,0" Background="#FFE7D2E9"/>
         <Button Content="MPs" HorizontalAlignment="Left" Margin="525,55,0,0" VerticalAlignment="Top" Width="55" Height="20" Click="CleanUpMountPoints" Padding="1,-2,1,1" Background="#FFE7D2E9" ToolTip="clean mountpoints"/>
         <Rectangle Stroke="Black" Margin="207,98,227,15" Fill="#FF7B5C41"/>
-        <TextBox x:Name="CmdInput" TextWrapping="Wrap" Text="rd c:\mount /S /Q" Background="#FF111010" Foreground="#FFEBFF0E" FontFamily="Cascadia Code" Margin="210,100,256,17" FontWeight="Bold" FontSize="11"/>
-        <Button Content="Run!" Click="RunDMC" BorderThickness="1,1,1,1" Background="#FF71768A" Foreground="#FFFFF900" Padding="-0.2,-3,0,0" Margin="324,100,230,17" BorderBrush="#FF78AC71"/>
-        <Button Content="BUILD ISO" HorizontalAlignment="Left" Margin="8,78,0,0" VerticalAlignment="Top" Click="CreateBootableISO" Height="18" Width="187" RenderTransformOrigin="0.5,0.5" ToolTip="Create a bootable WindowsPE ISO for use in network boot, usb boot, AIOboot ..." Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="1,1,2,1"/>
-        <Button Content="BUILD USB" HorizontalAlignment="Left" Margin="7,98,0,0" VerticalAlignment="Top" Click="CreateBootableUsb" ToolTip="Create bootable USB disk from my customised sources. " Height="28" Width="153" RenderTransformOrigin="0.5,0.5" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="1,1,2,1"/>
+        <TextBox x:Name="CmdInput" TextWrapping="WrapWithOverflow" Text="rd c:\mount /S /Q" Background="#FF111010" Foreground="#FFEBFF0E" FontFamily="Cascadia Code" Margin="210,100,256,17" FontWeight="Bold" FontSize="11"/>
+        <Button Content="Run!" Click="RunDMC" BorderThickness="1,1,1,1" Background="#FF71768A" Foreground="#FFFFF900" Padding="-0.2,-3,0,0" Margin="324,100,230,17" BorderBrush="#FF78AC71" IsDefault="True" PreviewKeyDown="CheckEnterKey" ToolTip="Now accepts enter as submit key"/>
+        <Button Content="BUILD ISO" HorizontalAlignment="Left" Margin="7,78,0,0" VerticalAlignment="Top" Click="CreateBootableISO" Height="18" Width="73" RenderTransformOrigin="0.5,0.5" ToolTip="Create a bootable WindowsPE ISO for use in network boot, usb boot, AIOboot ..." Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="1,1,2,1" Padding="1,-1,1,1"/>
+        <Button Content="BUILD USB" HorizontalAlignment="Left" Margin="7,98,0,0" VerticalAlignment="Top" Click="CreateBootableUsb" ToolTip="Create bootable USB disk from my customised sources. " Height="28" Width="153" RenderTransformOrigin="0.5,0.5" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="1,1,2,1" Padding="1,-3,1,1"/>
         <TextBox x:Name="usb" Margin="162,98,393,0" TextWrapping="Wrap" Text="d:" VerticalAlignment="Top" AutomationProperties.HelpText="test" Height="26" ToolTip="WIM Index (from wiminfo))!" Background="#FF080E01" Foreground="#FFFFE705" BorderThickness="1,1,1,1" BorderBrush="#FF061953" FontWeight="Bold" >
             <TextBox.Effect>
                 <DropShadowEffect/>
@@ -101,7 +103,10 @@
         <Button Content="MOUNT" HorizontalAlignment="Left" Margin="67,29,0,0" VerticalAlignment="Top" Click="MountISO" Height="23" Width="54" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="1,1,2,1"/>
         <Button Content="UNMOUNT" HorizontalAlignment="Left" Margin="125,29,0,0" VerticalAlignment="Top" Click="DismountISO" Height="23" Width="70" ToolTip="dismount virtual disk (virtual eject)" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="1,1,2,1"/>
         <Button Content="BROWSE" HorizontalAlignment="Left" VerticalAlignment="Top" Click="oFile" Height="23" Width="56" ToolTip="Click this button to mount the virtual disk image into your mount directory" Background="#FFDDDDDD" Foreground="#FFC32D2D" FontWeight="Bold" BorderBrush="#FF707070" BorderThickness="1,1,2,1" Margin="7,29,0,0"/>
-        <Button x:Name="StdInButton" Content="input" HorizontalAlignment="Left" Margin="8,56,0,0" VerticalAlignment="Top" Height="17" Width="55" Click="StdInChange" Padding="1,-4,1,1" Background="Red" FontSize="14" FontWeight="Bold" Foreground="#FFFDFF00"/>
-        <Button x:Name="EchoStat" Content="Echo" HorizontalAlignment="Left" Margin="67,56,0,0" VerticalAlignment="Top" Height="17" Padding="1,-2,1,1" Width="33" Click="ChgEcho"/>
+        <Button x:Name="StdInButton" Content="input" HorizontalAlignment="Left" Margin="13,55,0,0" VerticalAlignment="Top" Height="18" Width="42" Click="StdInChange" Padding="1,-4,1,1" Background="Red" FontSize="14" FontWeight="Bold" Foreground="#FFFDFF00" ToolTip="Change redirection of standard input" BorderBrush="#FFCB23DE"/>
+        <Button x:Name="EchoStat" Content="echo" HorizontalAlignment="Left" Margin="115,55,0,0" VerticalAlignment="Top" Height="18" Padding="1,-3,1,1" Width="35" Click="ChgEcho" ToolTip="turn echo on or off" Background="#FFF50909" Foreground="#FFFFEA03" FontWeight="Bold" FontSize="14"/>
+        <Button x:Name="CMDWindowStyle" Content="output" HorizontalAlignment="Left" Margin="60,55,0,0" VerticalAlignment="Top" Height="18" Padding="1,-3,1,1" Width="50" Background="#FF3B8421" Click="WindowStyleChg" ToolTip="Show command prompt output or work from hidden dosbox." FontSize="14" Foreground="#FFFDFF00" FontWeight="Bold"/>
+        <Button Content="Pos" HorizontalAlignment="Left" Margin="155,55,0,0" VerticalAlignment="Top" Click="get_res" Width="34" ToolTip="jump position" Height="18" Padding="1,-3,1,1" FontSize="14" Background="#FF77A1B7" Foreground="#FF6D650A"/>
+        <Button Content="Qemu ISO" HorizontalAlignment="Left" Margin="85,78,0,0" VerticalAlignment="Top" Height="18" Width="110" FontSize="14" Padding="1,-3,1,1" FontWeight="Bold" Click="TestISO" Foreground="#FFC52828" ToolTip="Test any bootable iso inside a vm using qemu"/>
     </Grid>
 </Window>

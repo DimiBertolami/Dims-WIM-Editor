@@ -265,6 +265,10 @@ namespace DimsISOTweaker
             {
                 webClient.DownloadFile("https://aka.ms/DownloadValidationOS_arm64", @"c:\\pe__data\\VALIDATIONOSARM64.iso");
             }
+            if (File.Exists("c:\\pe__data\\winpe.jpg") == false)
+            {
+                webClient.DownloadFile("https://aka.ms/DownloadValidationOS_arm64", @"c:\\pe__data\\VALIDATIONOSARM64.iso");
+            }
             if (Directory.Exists("c:\\ADK"))
             {
                 MessageBox.Show("c:\\adk exists! I will simply show the commands I would have used otherwise...");
@@ -430,23 +434,6 @@ namespace DimsISOTweaker
                                             "/Add-Package " +
                                             "/PackagePath=" + MountPoint.Text);
         }
-
-        private void ShowDosBox(object sender, RoutedEventArgs e)
-        {
-            if (Global.PID == 0)
-            {
-                Process x1 = new ReadStdOut().CreateProcess("", true);
-                x1.StartInfo.RedirectStandardInput = true;
-                x1.StandardInput.WriteLine("echo off & color 56");
-                Global.PID = x1.Id;
-                Global.ps = x1;
-            }
-            else
-            {
-                Process x1 = Global.ps;
-            }
-        }
-
         private void UnmountWIMAdk(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps;
@@ -483,11 +470,35 @@ namespace DimsISOTweaker
                                                    "/Set-ScratchSpace:512");
         }
 
+        private void ShowDosBox(object sender, RoutedEventArgs e)
+        {
+            if (Global.PID == 0)
+            {
+                Process x1 = new ReadStdOut().CreateProcess("", true);
+                MainScreen.Left = (((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - MainScreen.Width -23);
+                MainScreen.Top = 35;
+                x1.StartInfo.RedirectStandardInput = true;
+                x1.StartInfo.UseShellExecute = false;
+                x1.StartInfo.CreateNoWindow = Global.CreateNoWindow;
+                x1.StandardInput.WriteLine("echo off & color 56");
+                Global.PID = x1.Id;
+                Global.ps = x1;
+                Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - (int)MainScreen.ActualWidth - 23;
+                Global.PositionY = 35;
+            }
+            else
+            {
+                Process x1 = Global.ps;
+            }
+        }
+
+
         private void StdInChange(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps;
             ProcessStartInfo psi = x.StartInfo;
-            if(Global.RedirectStandardInput == true)
+            MainScreen.Topmost = true;
+            if (Global.RedirectStandardInput == true)
             {
                 x.Kill();
                 Process x1 = new ReadStdOut().CreateProcess("color 56 & pushd c:\\pe__data & echo off & cls", false);
@@ -509,15 +520,100 @@ namespace DimsISOTweaker
         private void ChgEcho(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps;
-            if (Global.EchoStat=="echo off")
+            MainScreen.Topmost = true;
+            if (x.StartInfo.RedirectStandardInput == true)
             {
-                x.StandardInput.WriteLine("echo on");
-                Global.EchoStat = "echo on";
-            } else
-            {
-                x.StandardInput.WriteLine("echo off");
-                Global.EchoStat = "echo off";
+                if (Global.EchoStat == "echo off")
+                {
+                    x.StandardInput.WriteLine("echo on");
+                    Global.EchoStat = "echo on";
+                    EchoStat.Background = Brushes.Green;
+                }
+                else
+                {
+                    x.StandardInput.WriteLine("echo off");
+                    Global.EchoStat = "echo off";
+                    EchoStat.Background = Brushes.Red;
+                }
             }
+        }
+
+        private void WindowStyleChg(object sender, RoutedEventArgs e)
+        {
+            Process x = Global.ps;
+            MainScreen.Topmost = true;
+            if (Global.WindowStyle== ProcessWindowStyle.Maximized) 
+            {
+                Global.WindowStyle = ProcessWindowStyle.Hidden;
+                x.Kill();
+                CMDWindowStyle.Background = Brushes.Red;
+                x.StartInfo.WindowStyle = Global.WindowStyle;
+                x.StartInfo.CreateNoWindow = true;
+                x.Start();
+
+            }
+            else
+            {
+                Global.WindowStyle = ProcessWindowStyle.Maximized;
+                x.Kill();
+                CMDWindowStyle.Background = Brushes.Green;
+                x.StartInfo.WindowStyle = Global.WindowStyle;
+                x.StartInfo.CreateNoWindow = false;
+                x.Start();
+            }
+        }
+
+        private void OnTopAgain(object sender, EventArgs e)
+        {
+                Window window = (Window)sender;
+                window.Topmost = true;
+        }
+
+//cycle through positions..
+        private void get_res(object sender, RoutedEventArgs e)
+        {
+            Global.PositionX = (int)MainScreen.Left;
+            Global.PositionY = 35;
+            MainScreen.Topmost = true;
+            switch (Global.PositionX)
+            {
+                case 1297:
+                    MainScreen.Left = 35;
+                    Global.PositionX = 35;
+                    MainScreen.Top = (uint)System.Windows.SystemParameters.PrimaryScreenHeight - (uint)MainScreen.ActualHeight -35;
+                    Global.PositionX = (int)System.Windows.SystemParameters.PrimaryScreenHeight - (int)MainScreen.ActualHeight -35;
+                    break;
+                case 35:
+                    MainScreen.Left = ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - (uint)MainScreen.ActualWidth - 23;
+                    Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - (int)MainScreen.ActualWidth - 23;
+                    MainScreen.Top = 35;
+                    Global.PositionY = 35;
+                    break;
+                default:
+                    MainScreen.Left = ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - (uint)MainScreen.ActualWidth - 23;
+                    Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - (int)MainScreen.ActualWidth - 23;
+                    MainScreen.Top = 35;
+                    Global.PositionY = 35;
+                    break;
+            }
+        }
+
+        private void CheckEnterKey(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                Process x = Global.ps;
+                x.StandardInput.WriteLine(CmdInput.Text);
+            }
+        }
+
+        private void TestISO(object sender, RoutedEventArgs e)
+        {
+            Process x = Global.ps;
+            if(!File.Exists("C:\\Program Files\\qemu\\qemu-system-x86_64.exe"))
+            { x.StandardInput.WriteLine("powershell -command \"winget install qemu\""); }
+            x.StandardInput.WriteLine("pushd C:\\Program Files\\qemu & " +
+                                      "qemu-system-x86_64.exe -boot d -cdrom \"" + ISO.Text + "\" -m 6000");
         }
     }
 }

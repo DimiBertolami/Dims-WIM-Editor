@@ -41,7 +41,8 @@ namespace DimsISOTweaker
             psi.UseShellExecute = false;
             psi.WorkingDirectory = "c:\\pe__data";
             psi.CreateNoWindow = false;
-            psi.WindowStyle = ProcessWindowStyle.Maximized;
+            Global.WindowStyle = Global.WindowStyle;
+            psi.WindowStyle = Global.WindowStyle;
 
             process.StartInfo.RedirectStandardInput = RedirectStandardInput;
             process.Start();
