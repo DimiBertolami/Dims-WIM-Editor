@@ -54,7 +54,7 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath " + ISO.Text + "\"");
+                x.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath '" + ISO.Text + "'\"");
             }
         }
 
@@ -63,7 +63,7 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("powershell -command \"Dismount-DiskImage -ImagePath " + ISO.Text + "\"");
+                x.StandardInput.WriteLine("powershell -command \"DisMount-DiskImage -ImagePath '" + ISO.Text + "'\"");
             }
         }
 
@@ -575,7 +575,7 @@ namespace DimsISOTweaker
                 x.Kill();
                 Process x1 = new ReadStdOut().CreateProcess("", true);
                 StdInButton.Background = Brushes.Red;
-                x1.StandardInput.WriteLine("color 56");
+                x1.StandardInput.WriteLine("color 56 & title the purple terminal is controlled by the gui .. The blue one by you & cls");
                 Global.ps = x1;
                 Global.RedirectStandardInput = true;
             }
@@ -604,25 +604,22 @@ namespace DimsISOTweaker
         void WindowStyleChg(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
+            MessageBox.Show("WindowStyle" + Global.WindowStyle);
             if (Global.WindowStyle== ProcessWindowStyle.Maximized) 
             {
-                Global.WindowStyle = ProcessWindowStyle.Hidden;
-                x.Kill();
-                CMDWindowStyle.Background = Brushes.Red;
-                x.StartInfo.WindowStyle = Global.WindowStyle;
-                x.StartInfo.CreateNoWindow = true;
-                x.Start();
-
+                Global.WindowStyle = ProcessWindowStyle.Minimized;
+                x.StartInfo.CreateNoWindow = false;
+                Out.Background = Brushes.Red;
             }
             else
             {
                 Global.WindowStyle = ProcessWindowStyle.Maximized;
-                x.Kill();
-                CMDWindowStyle.Background = Brushes.Green;
-                x.StartInfo.WindowStyle = Global.WindowStyle;
+                Out.Background = Brushes.Green;
                 x.StartInfo.CreateNoWindow = false;
-                x.Start();
             }
+            x.StartInfo.WindowStyle = Global.WindowStyle;
+            x.Kill();
+            x.Start();
         }
 
         void OnTopAgain(object sender, EventArgs e)

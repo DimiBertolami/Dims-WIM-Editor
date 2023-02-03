@@ -27,8 +27,6 @@ namespace DimsISOTweaker
             Process process = new Process();
             ProcessStartInfo psi = process.StartInfo;
             psi.FileName = binaryExecutable;
-            //psi.Arguments = "@echo off & pushd c:\\ & cls";
-            //psi.FileName = this.binaryExecutable;
             if (process.StartInfo.RedirectStandardInput == true)
             {
                 Args = "color 56 & @echo off & pushd c:\\";
