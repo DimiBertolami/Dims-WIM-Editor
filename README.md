@@ -7,6 +7,11 @@ so as an axample you can try creating a default ADK Pe, and install the Validati
 ![image](https://user-images.githubusercontent.com/77209365/216769957-c36c4448-4d93-4a8f-85e0-babd6e5ed7ce.png)
 
 
+And not to toot my own horn but this is how my cuwtom PE comes out from just 10 buttons..
+![image](https://user-images.githubusercontent.com/77209365/216771611-8df41f69-7b12-4533-8693-6d7e4fb8210d.png)
+
+
+
 ![image](https://user-images.githubusercontent.com/77209365/216536611-120c3b45-de29-433e-86ff-2692a1a79787.png)
 
 
