@@ -207,62 +207,106 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /mount-wim /wimfile:" + MountPoint.Text + "\\media\\sources\\boot.wim" +
-                    " /index:" + Index.Text + " /MountDir:" + MountPoint.Text + "\\MOUNT");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                                                "/mount-wim " +
+                                                "/wimfile:" + 
+                                                    MountPoint.Text + 
+                                                    "\\media\\sources\\boot.wim " +
+                                                "/index:" + Index.Text + " " +
+                                                "/MountDir:" + 
+                                                    MountPoint.Text + "\\MOUNT");
             }
         }
 
         void ADKPESetup(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists("C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment")) { return; }
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Directory.Exists("C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment")) 
+            { 
+                return; 
+            }
+            else
             {
-                x.StandardInput.WriteLine("pe__data\\adkwinpesetup.exe /features + /installpath c:\\ADK /Q");
-                x.StandardInput.WriteLine("PE Addon for Windows Assessment and Deployment Kit Installed!");
+                if (Global.RedirectStandardInput == true)
+                {
+                    x.StandardInput.WriteLine("start /b /wait " +
+                        "c:\\pe__data\\adkwinpesetup.exe " +
+                            "/features + " +
+                            "/installpath c:\\ADK");
+                }
             }
         }
 
         void adksetup(object sender, RoutedEventArgs e)
         {
-            Process x = Global.ps; MainScreen.Topmost = true;
+            WebClient webClient = new WebClient();
+            Global.webClient = webClient;
+            Process x = Global.ps; 
+            MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                WebClient webClient = Global.webClient;
-                if (File.Exists("c:\\pe__data\\adksetup.exe") == false)
-                {
-                    MessageBox.Show("c:\\pe__data\\adksetup.exe not found");
-                    webClient.DownloadFile("https://go.microsoft.com/fwlink/?linkid=2196127", @"c:\\pe__data\\adksetup.exe");
-                }
-                if (File.Exists("c:\\pe__data\\adwinpeksetup.exe") == false)
-                {
-                    webClient.DownloadFile("https://go.microsoft.com/fwlink/?linkid=2196224", @"c:\\pe__data\\adwinpeksetup.exe");
-                }
-                if (File.Exists("c:\\pe__data\\VALIDATIONOS.iso") == false)
-                {
-                    webClient.DownloadFile("https://aka.ms/DownloadValidationOS", @"c:\\pe__data\\VALIDATIONOS.iso");
-                }
-                if (File.Exists("c:\\pe__data\\VALIDATIONOSARM64.iso") == false)
-                {
-                    webClient.DownloadFile("https://aka.ms/DownloadValidationOS_arm64", @"c:\\pe__data\\VALIDATIONOSARM64.iso");
-                }
-                if (File.Exists("c:\\pe__data\\winpe.jpg") == false)
-                {
-                    webClient.DownloadFile("https://github.com/DimiBertolami/Dims-WIM-Editor/blob/main/winpe.jpg", @"c:\\pe__data\\winpe.jpg");
-                }
-                // 
-                if (File.Exists("c:\\pe__data\\pstools.zip") == false)
-                {
-                    webClient.DownloadFile("https://download.sysinternals.com/files/PSTools.zip", @"c:\\pe__data\\pstools.zip");
-                }
                 if (Directory.Exists("c:\\ADK"))
                 {
-                    return;
-                }
-                else
+                    if (Directory.Exists("c:\\pe__data"))
+                    {
+                        if (File.Exists("c:\\pe__data\\ADKSETUP.EXE"))
+                        {
+                            if (File.Exists("c:\\pe__data\\ADKWINPE.EXE"))
+                            {
+                                if (File.Exists("c:\\pe__data\\VALIDATIONOS.ISO"))
+                                {
+                                    if (File.Exists("c:\\pe__data\\pstools.zip"))
+                                    {
+                                        if (File.Exists("c:\\pe__data\\winpe.jpg"))
+                                        {
+                                            x.StandardInput.WriteLine("echo environment ok");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else 
                 {
-                    x.StandardInput.WriteLine("c:\\pe__data\\adksetup.exe /features optionid.deploymentTools /installpath c:\\ADK /Q");
-                }
+                    // NoReadOnly(MountPoint.Text, "\\media\\sources\\boot.wim")
+                    // 
+                    // 
+
+
+                    Directory.CreateDirectory("c:\\pe__data\\");
+                    webClient.DownloadFile(
+                        "https://go.microsoft.com/fwlink/?linkid=2196127",
+                        @"c:\\pe__data\\adksetup.exe");
+                    webClient.DownloadFile(
+                        "https://go.microsoft.com/fwlink/?linkid=2196224",
+                        @"c:\\pe__data\\adkwinpesetup.exe");
+                    webClient.DownloadFile(
+                        "https://aka.ms/DownloadValidationOS",
+                        @"c:\\pe__data\\VALIDATIONOS.iso");
+                    webClient.DownloadFile(
+                        "https://download.sysinternals.com/files/PSTools.zip",
+                        @"c:\\pe__data\\pstools.zip");
+                    webClient.DownloadFile(
+                        "https://github.com/DimiBertolami/Dims-WIM-Editor/blob/main/winpe.jpg",
+                        @"c:\\pe__data\\winpe.jpg");
+                    NoReadOnly(MountPoint.Text, "\\media\\sources\\boot.wim");
+                    NoReadOnly(MountPoint.Text, "\\media\\sources\\INSTALL.WIM");
+                    NoReadOnly("c:\\pe__data\\", "pstools.zip");
+                    NoReadOnly("c:\\pe__data\\", "adksetup.exe");
+                    NoReadOnly("c:\\pe__data\\", "validationOS.iso");
+                    NoReadOnly("c:\\pe__data\\", "adkwinpesetup.exe");
+                    x.StandardInput.WriteLine("ECHO validation OS iso downloaded");
+                    x.StandardInput.WriteLine("echo sysinternals pstools downloaded");
+                    x.StandardInput.WriteLine("echo custom PE background downloaded");
+                    x.StandardInput.WriteLine("START /B /WAIT " +
+                        "c:\\pe__data\\adksetup.exe " +
+                                "/features optionid.deploymentTools " +
+                                "/installpath c:\\ADK"); // +"/Q"
+                    x.StandardInput.WriteLine("START /B /WAIT " +
+                        "pe__data\\adkwinpesetup.exe " +
+                                "/features + " +
+                                "/installpath c:\\ADK"); // + "/Q"
+                } 
             }
         }
 
@@ -271,7 +315,12 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Image:" + MountPoint.Text + "\\mount /cleanup-image /StartComponentCleanup /ResetBase");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                                                    "/Image:" + 
+                                                        MountPoint.Text + "\\mount " +
+                                                    "/cleanup-image " +
+                                                    "/StartComponentCleanup " +
+                                                    "/ResetBase");
             }
         }
 
@@ -280,7 +329,12 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Image:" + MountPoint.Text + "\\MOUNT /cleanup-image /StartComponentCleanup /ResetBase");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                                                    "/Image:" + 
+                                                        MountPoint.Text + "\\MOUNT " +
+                                                    "/cleanup-image " +
+                                                    "/StartComponentCleanup " +
+                                                    "/ResetBase");
             }
         }
 
@@ -289,21 +343,30 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Cleanup-Mountpoints");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                    "/Cleanup-Mountpoints");
             }
         }
 
         void CreateBootableISO(object sender, RoutedEventArgs e)
         {
-            
-            
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                if (File.Exists(MountPoint.Text + "\\media\\sources\\boot.old")) { File.Delete(MountPoint.Text + "\\media\\sources\\boot.old"); }
-                if (File.Exists(MountPoint.Text + "\\media\\sources\\boot2.wim")) { File.Delete(MountPoint.Text + "\\media\\sources\\boot2.wim"); };
-                x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\windows Preinstallation Environment");
-                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /ISO " + MountPoint.Text + " " + MountPoint.Text + "\\newPE.iso");
+                if (File.Exists(MountPoint.Text + 
+                    "\\media\\sources\\boot.old")) { File.Delete(MountPoint.Text + 
+                        "\\media\\sources\\boot.old"); }
+                if (File.Exists(MountPoint.Text + 
+                    "\\media\\sources\\boot2.wim")) { File.Delete(MountPoint.Text + 
+                        "\\media\\sources\\boot2.wim"); };
+                x.StandardInput.WriteLine("pushd " +
+                    "C:\\ADK\\Assessment and Deployment Kit\\" +
+                    "windows Preinstallation Environment");
+                x.StandardInput.WriteLine("echo Y" +
+                    " | MakeWinPEMedia.cmd " +
+                    "/ISO " + MountPoint.Text + 
+                    " " + 
+                    MountPoint.Text + "\\newPE.iso");
             }
         }
 
@@ -312,13 +375,22 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                if (File.Exists(MountPoint.Text + "\\media\\sources\\boot.old")) { File.Delete(MountPoint.Text + "\\media\\sources\\boot.old"); };
-                if (File.Exists(MountPoint.Text + "\\media\\sources\\boot2.wim")) { File.Delete(MountPoint.Text + "\\media\\sources\\boot2.wim"); };
-                x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\"");
-                x.StandardInput.WriteLine("pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\"");
+                if (File.Exists(MountPoint.Text + 
+                    "\\media\\sources\\boot.old")) { File.Delete(MountPoint.Text + 
+                        "\\media\\sources\\boot.old"); };
+                if (File.Exists(MountPoint.Text + 
+                    "\\media\\sources\\boot2.wim")) { File.Delete(MountPoint.Text + 
+                        "\\media\\sources\\boot2.wim"); };
+                x.StandardInput.WriteLine("pushd" +
+                    " \"C:\\ADK\\Assessment and Deployment Kit" +
+                    "\\Windows Preinstallation Environment\"");
+                x.StandardInput.WriteLine("pushd" +
+                    " \"C:\\ADK\\Assessment and Deployment Kit" +
+                    "\\Deployment Tools\"");
                 x.StandardInput.WriteLine("call DandISetEnv.bat");
                 x.StandardInput.WriteLine("popd");
-                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /UFD " + MountPoint.Text + " " + usb.Text);
+                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /UFD " + 
+                    MountPoint.Text + " " + usb.Text);
             }
         }
 
@@ -329,12 +401,18 @@ namespace DimsISOTweaker
             {
                 x.StandardInput.WriteLine("echo boot.wim renamed");
                 File.Move(MountPoint.Text + "\\media\\sources\\boot.wim",
-                          MountPoint.Text + "\\media\\sources\\boot2.wim", true);
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Export-Image " +
-                        "/SourceImageFile:" + MountPoint.Text + "\\media\\sources\\boot2.wim " +
+                          MountPoint.Text + "\\media\\sources\\boot2.wim", 
+                          true);
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                        "/Export-Image " +
+                        "/SourceImageFile:" + MountPoint.Text + 
+                                "\\media\\sources\\boot2.wim " +
                         "/SourceIndex:" + Index.Text + " " +
-                        "/DestinationImageFile:" + MountPoint.Text + "\\media\\sources\\boot.wim");
-                x.StandardInput.WriteLine("echo removing backup boot.wim & del " + MountPoint.Text + "\\media\\sources\\boot2.wim /Q /F");
+                        "/DestinationImageFile:" + MountPoint.Text + 
+                                "\\media\\sources\\boot.wim");
+                x.StandardInput.WriteLine("echo removing backup boot.wim & " +
+                    "del " + MountPoint.Text + 
+                        "\\media\\sources\\boot2.wim /Q /F");
             }
         }
 
@@ -343,7 +421,9 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Image:" + MountPoint.Text + "\\mount /get-Packages");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                    "/Image:" + MountPoint.Text + "\\mount " +
+                    "/get-Packages");
             }
         }
 
@@ -355,19 +435,23 @@ namespace DimsISOTweaker
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim");
+                                                    "/WimFile:" + MountPoint.Text + 
+                                                            "\\media\\sources\\boot.wim");
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + "\\media\\sources\\boot.wim  " +
+                                                    "/WimFile:" + MountPoint.Text + 
+                                                            "\\media\\sources\\boot.wim  " +
                                                     "/index:" + Index.Text);
                 if (File.Exists(MountPoint.Text + "\\media\\sources\\install.wim"))
                 {
                     x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + "\\media\\sources\\install.wim");
+                                                    "/WimFile:" + MountPoint.Text + 
+                                                            "\\media\\sources\\install.wim");
                     x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + "\\media\\sources\\install.wim  " +
+                                                    "/WimFile:" + MountPoint.Text + 
+                                                            "\\media\\sources\\install.wim  " +
                                                     "/index:" + Index.Text);
                 }
                 if (File.Exists(usb.Text + "\\sources\\boot.wim"))
@@ -399,7 +483,8 @@ namespace DimsISOTweaker
             MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true)
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Get-MountedWimInfo");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                    "/Get-MountedWimInfo");
             }
 
         }
@@ -411,9 +496,11 @@ namespace DimsISOTweaker
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                                                 "/mount-wim " +
-                                                "/WimFile:" + MountPoint.Text + "\\media\\sources\\install.wim " +
+                                                "/WimFile:" + MountPoint.Text + 
+                                                        "\\media\\sources\\install.wim " +
                                                 "/index:" + Index.Text + " " +
-                                                "/MountDir:" + MountPoint.Text + "\\MOUNT");
+                                                "/MountDir:" + 
+                                                    MountPoint.Text + "\\MOUNT");
             }
         }
 
@@ -432,9 +519,14 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("takeown /F " + MountPoint.Text + "\\mount\\Windows\\System32\\winpe.jpg");
-                x.StandardInput.WriteLine("icacls " + MountPoint.Text + "\\mount\\Windows\\System32\\winpe.jpg /grant administrators:F");
-                x.StandardInput.WriteLine("copy c:\\pe__data\\winpe.jpg " + MountPoint.Text + "\\mount\\Windows\\System32\\ /Y");
+                x.StandardInput.WriteLine("takeown /F " + MountPoint.Text + 
+                                            "\\mount\\Windows\\System32\\winpe.jpg");
+                x.StandardInput.WriteLine("icacls " + 
+                    MountPoint.Text + "\\mount\\Windows\\System32\\winpe.jpg " +
+                    "/grant administrators:F");
+                x.StandardInput.WriteLine("copy " +
+                    "c:\\pe__data\\winpe.jpg " + 
+                    MountPoint.Text + "\\mount\\Windows\\System32\\ /Y");
             }
         }
 
@@ -459,9 +551,9 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("if you see a wild error appear, it might be because no install.wim is mounted");
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
-                                                "/Image:" + MountPoint.Text + "\\mount " +
+                                                "/Image:" + 
+                                                    MountPoint.Text + "\\mount " +
                                                 "/Add-Package " +
                                                 "/PackagePath=" + MountPoint.Text);
             }
@@ -472,9 +564,12 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /unmount-wim /mountdir:" +
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                            "/unmount-wim " +
+                            "/mountdir:" +
                              MountPoint.Text +
-                             "\\MOUNT /commit");
+                             "\\MOUNT " +
+                             "/commit");
             }
         }
 
@@ -483,7 +578,11 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true) 
             {
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /unmount-wim /mountdir:" + MountPoint.Text + "\\MOUNT /discard");
+                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
+                    "/unmount-wim " +
+                    "/mountdir:" + 
+                            MountPoint.Text + "\\MOUNT " +
+                    "/discard");
             }
         }
 
@@ -495,28 +594,35 @@ namespace DimsISOTweaker
                 DriveInfo[] drives = DriveInfo.GetDrives();
                 if (File.Exists("c:\\pe__data\\validationOS.wim") == false)
                 {
-                    x.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath c:\\pe__data\\ValidationOS.iso\"");
+                    x.StandardInput.WriteLine("powershell -command" +
+                        " \"Mount-DiskImage " +
+                        "-ImagePath c:\\pe__data\\ValidationOS.iso\"");
                     for (int i = 0; i < drives.Count(); i++)
                     {
                         if (File.Exists(drives[i].Name + "ValidationOS.wim"))
                         {
                             usb.Text = drives[i].Name;
-                            x.StandardInput.WriteLine("copy " + drives[i].Name + "ValidationOS.wim c:\\pe__data\\ValidationOS.wim /y");
-                            x.StandardInput.WriteLine("xcopy /E /Z " + drives[i].Name + "cabs c:\\pe__data\\cabs /y");
-                            x.StandardInput.WriteLine("echo validationOS cabs copied from iso");
-                            x.StandardInput.WriteLine("copy " + drives[i].Name + "ValidationOS.wim " + MountPoint.Text + "\\media\\sources\\boot.wim /y");
-                            x.StandardInput.WriteLine("echo validationOS.wim copied from iso");
+                            x.StandardInput.WriteLine("copy " + 
+                                drives[i].Name + "ValidationOS.wim " +
+                                "c:\\pe__data\\ValidationOS.wim /y");
+                            x.StandardInput.WriteLine("xcopy /E /Z " + 
+                                drives[i].Name + "cabs " +
+                                "c:\\pe__data\\cabs /y");
+                            x.StandardInput.WriteLine("copy " + 
+                                drives[i].Name + "ValidationOS.wim " + 
+                                MountPoint.Text + "\\media\\sources\\boot.wim /y");
                         }
                     }
-                    x.StandardInput.WriteLine("powershell -command \"DisMount-DiskImage -ImagePath c:\\pe__data\\ValidationOS.iso\"");
+                    x.StandardInput.WriteLine("powershell -command" +
+                        " \"DisMount-DiskImage " +
+                        "-ImagePath c:\\pe__data\\ValidationOS.iso\"");
                 }
-                else
-                {
-                    x.StandardInput.WriteLine("copy " + usb.Text + "ValidationOS.wim " + MountPoint.Text + "\\media\\sources\\boot.wim /y");
-                }
-                FileInfo file = new FileInfo(MountPoint.Text + "\\media\\sources\\boot.wim");
-                file.IsReadOnly = false;
             }
+        }
+        public static void NoReadOnly(string mpTxt, string ReadOnlyfile)
+        {
+            FileInfo file = new FileInfo(mpTxt + ReadOnlyfile);
+            file.IsReadOnly = false;
         }
 
         void MaxScratch(object sender, RoutedEventArgs e)
@@ -561,7 +667,9 @@ namespace DimsISOTweaker
                     x.Kill();
                     Process x1 = new ReadStdOut().CreateProcess();
                     StdInButton.Background = Brushes.Red;
-                    x1.StandardInput.WriteLine("color 56 & title the purple terminal is controlled by the gui .. The blue one by you & cls");
+                    x1.StandardInput.WriteLine("color 56 & " +
+                        "title the purple terminal is controlled " +
+                        "by the gui .. The blue one by you & cls");
                     Global.ps = x1;
                     Global.RedirectStandardInput = true;
                 }
@@ -627,18 +735,30 @@ namespace DimsISOTweaker
                 case 1297:
                     MainScreen.Left = 35;
                     Global.PositionX = 35;
-                    MainScreen.Top = (uint)System.Windows.SystemParameters.PrimaryScreenHeight - (uint)MainScreen.ActualHeight -35;
-                    Global.PositionX = (int)System.Windows.SystemParameters.PrimaryScreenHeight - (int)MainScreen.ActualHeight -35;
+                    MainScreen.Top = 
+                        (uint)System.Windows.SystemParameters.PrimaryScreenHeight-
+                        (uint)MainScreen.ActualHeight-35;
+                    Global.PositionX = 
+                        (int)System.Windows.SystemParameters.PrimaryScreenHeight - 
+                        (int)MainScreen.ActualHeight -35;
                     break;
                 case 35:
-                    MainScreen.Left = ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - (uint)MainScreen.ActualWidth - 23;
-                    Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - (int)MainScreen.ActualWidth - 23;
+                    MainScreen.Left = 
+                        ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                        (uint)MainScreen.ActualWidth - 23;
+                    Global.PositionX = 
+                        ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                        (int)MainScreen.ActualWidth - 23;
                     MainScreen.Top = 35;
                     Global.PositionY = 35;
                     break;
                 default:
-                    MainScreen.Left = ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - (uint)MainScreen.ActualWidth - 23;
-                    Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - (int)MainScreen.ActualWidth - 23;
+                    MainScreen.Left = 
+                        ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                        (uint)MainScreen.ActualWidth - 23;
+                    Global.PositionX = 
+                        ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                        (int)MainScreen.ActualWidth - 23;
                     MainScreen.Top = 35;
                     Global.PositionY = 35;
                     break;
@@ -664,11 +784,13 @@ namespace DimsISOTweaker
             {
                 if (!File.Exists("C:\\Program Files\\qemu\\qemu-system-x86_64.exe"))
                 { x.StandardInput.WriteLine("powershell -command \"winget install qemu\""); }
-                x.StandardInput.WriteLine("pushd C:\\Program Files\\qemu & " +
-                                          "start qemu-system-x86_64.exe -boot d -cdrom \"" + ISO.Text + "\" -m 8000");
-            } 
-            else
+            } else
             {
+                x.StandardInput.WriteLine("pushd C:\\Program Files\\qemu & " +
+                                          "start qemu-system-x86_64.exe " +
+                                                "-boot d " +
+                                                "-cdrom \"" + ISO.Text + "\" " +
+                                                "-m 8000");
             }
         }
     }
