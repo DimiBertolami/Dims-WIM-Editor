@@ -146,22 +146,15 @@ namespace DimsISOTweaker
             Process x = Global.ps; MainScreen.Topmost = true;
             if (Global.RedirectStandardInput == true)
             {
-                x.StandardInput.WriteLine("ECHO integrating the optional components from the ADK.");
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /mount-wim " +
-                                                       "/wimfile:" + MountPoint.Text + "\\media\\sources\\boot.wim " +
-                                                       "/index:" + Index.Text + " " +
-                                                       "/MountDir:" + MountPoint.Text + "\\MOUNT" +
-                                                       ">nul|| echo skipping mount...");
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /Image:" +
-                                MountPoint.Text + "\\mount " +
-                                "/Add-Package " +
-                                "/PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\"");
+                //x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /mount-wim " +
+                //                                       "/wimfile:" + MountPoint.Text + "\\media\\sources\\boot.wim " +
+                //                                       "/index:" + Index.Text + " " +
+                //                                       "/MountDir:" + MountPoint.Text + "\\MOUNT" +
+                //                                       ">nul|| echo skipping mount...");
+                x.StandardInput.WriteLine("for /f %x in (list.txt) do dism /image:c:\\mount\\mount /add-package /packagepath:" + (char)34 + "%~dpnxx" + (char)34);
                 x.StandardInput.WriteLine("cd en-us");
-                x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
-                                "/Image:" + MountPoint.Text + "\\mount " +
-                                "/Add-Package " +
-                                "/PackagePath:\"C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs\\en-us\"");
+                x.StandardInput.WriteLine("for /f \"usebackq\" %x in (`dir *.cab /b`) do dism /Image:c:\\mount\\mount /add-package /packagepath:\"%~dpnxx\"");
             }
         }
 
@@ -785,15 +778,11 @@ namespace DimsISOTweaker
             if (Global.RedirectStandardInput == true)
             {
                 if (File.Exists("C:\\Program Files\\qemu\\qemu-system-x86_64.exe")==false)
-                { x.StandardInput.WriteLine("powershell -command \"winget install qemu\""); }
-            }
-            else
-            {
+                { 
+                    x.StandardInput.WriteLine("powershell -command \"winget install qemu\""); 
+                }
                 x.StandardInput.WriteLine("pushd C:\\Program Files\\qemu & " +
-                                          "start qemu-system-x86_64.exe " +
-                                                "-boot d " +
-                                                "-cdrom \"" + ISO.Text + "\" " +
-                                                "-m 8000");
+                                          "qemu-system-x86_64.exe -boot d -cdrom " + ISO.Text + " -m 8000");
             }
         }
     }
