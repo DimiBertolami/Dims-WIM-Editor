@@ -1,5 +1,12 @@
 # Dims-WIM-Editor
 
+so as an axample you can try creating a default ADK Pe, and install the ValidationOS optional components.. They work just fine also. Then you enlargen the scratchspace to its max and replace the default pd background.. you can also cleanup after indtallation, unmount and export the image to increase boot performance. Push the button to build the iso and test with Qemu. In buttons this would be something like this..
+![image](https://user-images.githubusercontent.com/77209365/216770974-eddc731e-2717-4879-9d66-7aafd1ed8c22.png)
+
+
+![image](https://user-images.githubusercontent.com/77209365/216769957-c36c4448-4d93-4a8f-85e0-babd6e5ed7ce.png)
+
+
 ![image](https://user-images.githubusercontent.com/77209365/216536611-120c3b45-de29-433e-86ff-2692a1a79787.png)
 
 
