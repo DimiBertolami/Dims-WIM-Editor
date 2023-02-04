@@ -782,7 +782,7 @@ namespace DimsISOTweaker
                     x.StandardInput.WriteLine("powershell -command \"winget install qemu\""); 
                 }
                 x.StandardInput.WriteLine("pushd C:\\Program Files\\qemu & " +
-                                          "qemu-system-x86_64.exe -boot d -cdrom " + ISO.Text + " -m 8000");
+                                          "qemu-system-x86_64.exe -boot d -cdrom " + (char)34 + ISO.Text + (char)34 + " -m 8000");
             }
         }
     }
