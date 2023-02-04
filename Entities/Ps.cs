@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace WinISOEditor.Entities
 {
     public class Ps : System.ComponentModel.Component, IDisposable
     {
         public int Id { get; set; }
-        public string Argument { get; set; } 
+        public string Argument { get; set; }
         public string binaryExecutable { get; set; } = "cmd.exe";
         bool RedirectStdIn { get; set; } = true;
         bool RedirectStdOut { get; set; } = true;

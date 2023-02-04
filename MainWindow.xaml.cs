@@ -1,38 +1,15 @@
-﻿using System;
-using System.Net;
-using System.Collections.Generic;
+﻿//using CmdApp;
+using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.IO;
-using static System.IO.FileInfo;
-using System.IO.Enumeration;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Interop;
-using static System.Net.Mime.MediaTypeNames;
-using System.Drawing;
-using System.IO.Packaging;
-//using CmdApp;
-using System.Windows.Controls.Primitives;
-using System.Xml.Linq;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
-using System.Reflection;
-using System.Runtime.Intrinsics.Arm;
-using System.IO.Compression;
-using Microsoft.Win32;
-using System.Runtime;
-using WinISOEditor.Entities;
 
 namespace DimsISOTweaker
 {
@@ -42,7 +19,12 @@ namespace DimsISOTweaker
     public partial class MainWindow : Window
     {
         private string StandardArguments = Global.Args;
+        int hWnd = 0;
 
+        private const int SW_HIDE = 0;
+        private const int SW_SHOW = 5;
+        [DllImport("User32")]
+        private static extern int ShowWindow(int hwnd, int nCmdShow);
 
         public MainWindow()
         {
@@ -51,7 +33,7 @@ namespace DimsISOTweaker
             if (Global.PID == 0)
             {
                 Process x1 = new ReadStdOut().CreateProcess();
-                MainScreen.Left = (((uint)System.Windows.SystemParameters.PrimaryScreenWidth)-MainScreen.Width-23);
+                MainScreen.Left = (((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - MainScreen.Width - 23);
                 MainScreen.Top = 35;
                 x1.StartInfo.RedirectStandardInput = true;
                 x1.StartInfo.UseShellExecute = false;
@@ -59,7 +41,7 @@ namespace DimsISOTweaker
                 x1.StandardInput.WriteLine("color 56 & cls");
                 Global.PID = x1.Id;
                 Global.ps = x1;
-                Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth)-((int)MainScreen.ActualWidth)-23;
+                Global.PositionX = ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - ((int)MainScreen.ActualWidth) - 23;
                 Global.PositionY = 35;
             }
         }
@@ -67,7 +49,7 @@ namespace DimsISOTweaker
         void MountISO(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("powershell -command \"Mount-DiskImage -ImagePath '" + ISO.Text + "'\"");
             }
@@ -76,7 +58,7 @@ namespace DimsISOTweaker
         void DismountISO(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("powershell -command \"DisMount-DiskImage -ImagePath '" + ISO.Text + "'\"");
             }
@@ -85,7 +67,7 @@ namespace DimsISOTweaker
         void CopyWIM(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION & " +
                                       "pushd \"C:\\ADK\\Assessment and Deployment Kit\\Deployment Tools\" & " +
@@ -98,7 +80,7 @@ namespace DimsISOTweaker
         void cpWIM(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 Directory.CreateDirectory(MountPoint.Text + "\\Drivers");
                 DriveInfo[] drives = DriveInfo.GetDrives();
@@ -141,7 +123,7 @@ namespace DimsISOTweaker
         void addCabs(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("pushd C:\\pe__data\\cabs\\neutral");
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism /mount-wim " +
@@ -162,7 +144,7 @@ namespace DimsISOTweaker
         void AddCabz(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("ECHO integrating the optional components from the ADK.");
                 x.StandardInput.WriteLine("pushd C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment\\amd64\\WinPE_OCs");
@@ -186,7 +168,7 @@ namespace DimsISOTweaker
         void AddPEDrivers(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("md c:\\mount\\DRIVERS &" +
                                           "C:\\pe__data\\DISM\\dism " +
@@ -205,15 +187,15 @@ namespace DimsISOTweaker
         void adkMountWIM(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                                                 "/mount-wim " +
-                                                "/wimfile:" + 
-                                                    MountPoint.Text + 
+                                                "/wimfile:" +
+                                                    MountPoint.Text +
                                                     "\\media\\sources\\boot.wim " +
                                                 "/index:" + Index.Text + " " +
-                                                "/MountDir:" + 
+                                                "/MountDir:" +
                                                     MountPoint.Text + "\\MOUNT");
             }
         }
@@ -221,9 +203,9 @@ namespace DimsISOTweaker
         void ADKPESetup(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Directory.Exists("C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment")) 
-            { 
-                return; 
+            if (Directory.Exists("C:\\ADK\\Assessment and Deployment Kit\\Windows Preinstallation Environment"))
+            {
+                return;
             }
             else
             {
@@ -241,9 +223,9 @@ namespace DimsISOTweaker
         {
             WebClient webClient = new WebClient();
             Global.webClient = webClient;
-            Process x = Global.ps; 
+            Process x = Global.ps;
             MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 if (Directory.Exists("c:\\ADK"))
                 {
@@ -266,7 +248,8 @@ namespace DimsISOTweaker
                             }
                         }
                     }
-                } else 
+                }
+                else
                 {
                     // NoReadOnly(MountPoint.Text, "\\media\\sources\\boot.wim")
                     // 
@@ -306,17 +289,17 @@ namespace DimsISOTweaker
                         "pe__data\\adkwinpesetup.exe " +
                                 "/features + " +
                                 "/installpath c:\\ADK"); // + "/Q"
-                } 
+                }
             }
         }
 
         void cleanResetBase(object sender, ContextMenuEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
-                                                    "/Image:" + 
+                                                    "/Image:" +
                                                         MountPoint.Text + "\\mount " +
                                                     "/cleanup-image " +
                                                     "/StartComponentCleanup " +
@@ -327,10 +310,10 @@ namespace DimsISOTweaker
         void CleanupIMG(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
-                                                    "/Image:" + 
+                                                    "/Image:" +
                                                         MountPoint.Text + "\\MOUNT " +
                                                     "/cleanup-image " +
                                                     "/StartComponentCleanup " +
@@ -341,7 +324,7 @@ namespace DimsISOTweaker
         void CleanUpMountPoints(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                     "/Cleanup-Mountpoints");
@@ -351,21 +334,27 @@ namespace DimsISOTweaker
         void CreateBootableISO(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
-                if (File.Exists(MountPoint.Text + 
-                    "\\media\\sources\\boot.old")) { File.Delete(MountPoint.Text + 
-                        "\\media\\sources\\boot.old"); }
-                if (File.Exists(MountPoint.Text + 
-                    "\\media\\sources\\boot2.wim")) { File.Delete(MountPoint.Text + 
-                        "\\media\\sources\\boot2.wim"); };
+                if (File.Exists(MountPoint.Text +
+                    "\\media\\sources\\boot.old"))
+                {
+                    File.Delete(MountPoint.Text +
+                        "\\media\\sources\\boot.old");
+                }
+                if (File.Exists(MountPoint.Text +
+                    "\\media\\sources\\boot2.wim"))
+                {
+                    File.Delete(MountPoint.Text +
+                        "\\media\\sources\\boot2.wim");
+                };
                 x.StandardInput.WriteLine("pushd " +
                     "C:\\ADK\\Assessment and Deployment Kit\\" +
                     "windows Preinstallation Environment");
                 x.StandardInput.WriteLine("echo Y" +
                     " | MakeWinPEMedia.cmd " +
-                    "/ISO " + MountPoint.Text + 
-                    " " + 
+                    "/ISO " + MountPoint.Text +
+                    " " +
                     MountPoint.Text + "\\newPE.iso");
             }
         }
@@ -373,14 +362,20 @@ namespace DimsISOTweaker
         void CreateBootableUsb(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
-                if (File.Exists(MountPoint.Text + 
-                    "\\media\\sources\\boot.old")) { File.Delete(MountPoint.Text + 
-                        "\\media\\sources\\boot.old"); };
-                if (File.Exists(MountPoint.Text + 
-                    "\\media\\sources\\boot2.wim")) { File.Delete(MountPoint.Text + 
-                        "\\media\\sources\\boot2.wim"); };
+                if (File.Exists(MountPoint.Text +
+                    "\\media\\sources\\boot.old"))
+                {
+                    File.Delete(MountPoint.Text +
+                        "\\media\\sources\\boot.old");
+                };
+                if (File.Exists(MountPoint.Text +
+                    "\\media\\sources\\boot2.wim"))
+                {
+                    File.Delete(MountPoint.Text +
+                        "\\media\\sources\\boot2.wim");
+                };
                 x.StandardInput.WriteLine("pushd" +
                     " \"C:\\ADK\\Assessment and Deployment Kit" +
                     "\\Windows Preinstallation Environment\"");
@@ -389,7 +384,7 @@ namespace DimsISOTweaker
                     "\\Deployment Tools\"");
                 x.StandardInput.WriteLine("call DandISetEnv.bat");
                 x.StandardInput.WriteLine("popd");
-                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /UFD " + 
+                x.StandardInput.WriteLine("echo Y | MakeWinPEMedia.cmd /UFD " +
                     MountPoint.Text + " " + usb.Text);
             }
         }
@@ -397,21 +392,21 @@ namespace DimsISOTweaker
         void ExportWIMAdk(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("echo boot.wim renamed");
                 File.Move(MountPoint.Text + "\\media\\sources\\boot.wim",
-                          MountPoint.Text + "\\media\\sources\\boot2.wim", 
+                          MountPoint.Text + "\\media\\sources\\boot2.wim",
                           true);
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                         "/Export-Image " +
-                        "/SourceImageFile:" + MountPoint.Text + 
+                        "/SourceImageFile:" + MountPoint.Text +
                                 "\\media\\sources\\boot2.wim " +
                         "/SourceIndex:" + Index.Text + " " +
-                        "/DestinationImageFile:" + MountPoint.Text + 
+                        "/DestinationImageFile:" + MountPoint.Text +
                                 "\\media\\sources\\boot.wim");
                 x.StandardInput.WriteLine("echo removing backup boot.wim & " +
-                    "del " + MountPoint.Text + 
+                    "del " + MountPoint.Text +
                         "\\media\\sources\\boot2.wim /Q /F");
             }
         }
@@ -419,7 +414,7 @@ namespace DimsISOTweaker
         void getADKPackages(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                     "/Image:" + MountPoint.Text + "\\mount " +
@@ -435,22 +430,22 @@ namespace DimsISOTweaker
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + 
+                                                    "/WimFile:" + MountPoint.Text +
                                                             "\\media\\sources\\boot.wim");
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + 
+                                                    "/WimFile:" + MountPoint.Text +
                                                             "\\media\\sources\\boot.wim  " +
                                                     "/index:" + Index.Text);
                 if (File.Exists(MountPoint.Text + "\\media\\sources\\install.wim"))
                 {
                     x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + 
+                                                    "/WimFile:" + MountPoint.Text +
                                                             "\\media\\sources\\install.wim");
                     x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism.exe " +
                                                     "/Get-WimInfo " +
-                                                    "/WimFile:" + MountPoint.Text + 
+                                                    "/WimFile:" + MountPoint.Text +
                                                             "\\media\\sources\\install.wim  " +
                                                     "/index:" + Index.Text);
                 }
@@ -492,14 +487,14 @@ namespace DimsISOTweaker
         void MntInstallWim(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                                                 "/mount-wim " +
-                                                "/WimFile:" + MountPoint.Text + 
+                                                "/WimFile:" + MountPoint.Text +
                                                         "\\media\\sources\\install.wim " +
                                                 "/index:" + Index.Text + " " +
-                                                "/MountDir:" + 
+                                                "/MountDir:" +
                                                     MountPoint.Text + "\\MOUNT");
             }
         }
@@ -517,15 +512,15 @@ namespace DimsISOTweaker
         void ReplacePEBackgroundImage(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
-                x.StandardInput.WriteLine("takeown /F " + MountPoint.Text + 
+                x.StandardInput.WriteLine("takeown /F " + MountPoint.Text +
                                             "\\mount\\Windows\\System32\\winpe.jpg");
-                x.StandardInput.WriteLine("icacls " + 
+                x.StandardInput.WriteLine("icacls " +
                     MountPoint.Text + "\\mount\\Windows\\System32\\winpe.jpg " +
                     "/grant administrators:F");
                 x.StandardInput.WriteLine("copy " +
-                    "c:\\pe__data\\winpe.jpg " + 
+                    "c:\\pe__data\\winpe.jpg " +
                     MountPoint.Text + "\\mount\\Windows\\System32\\ /Y");
             }
         }
@@ -533,7 +528,7 @@ namespace DimsISOTweaker
         void RunDMC(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine(CmdInput.Text);
             }
@@ -549,10 +544,10 @@ namespace DimsISOTweaker
             // piece of cake..
 
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
-                                                "/Image:" + 
+                                                "/Image:" +
                                                     MountPoint.Text + "\\mount " +
                                                 "/Add-Package " +
                                                 "/PackagePath=" + MountPoint.Text);
@@ -562,7 +557,7 @@ namespace DimsISOTweaker
         void UnmountWIMAdk(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                             "/unmount-wim " +
@@ -576,11 +571,11 @@ namespace DimsISOTweaker
         void UnMountWIMDiscard(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("C:\\pe__data\\DISM\\dism " +
                     "/unmount-wim " +
-                    "/mountdir:" + 
+                    "/mountdir:" +
                             MountPoint.Text + "\\MOUNT " +
                     "/discard");
             }
@@ -589,7 +584,7 @@ namespace DimsISOTweaker
         void vOS(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 DriveInfo[] drives = DriveInfo.GetDrives();
                 if (File.Exists("c:\\pe__data\\validationOS.wim") == false)
@@ -602,14 +597,14 @@ namespace DimsISOTweaker
                         if (File.Exists(drives[i].Name + "ValidationOS.wim"))
                         {
                             usb.Text = drives[i].Name;
-                            x.StandardInput.WriteLine("copy " + 
+                            x.StandardInput.WriteLine("copy " +
                                 drives[i].Name + "ValidationOS.wim " +
                                 "c:\\pe__data\\ValidationOS.wim /y");
-                            x.StandardInput.WriteLine("xcopy /E /Z " + 
+                            x.StandardInput.WriteLine("xcopy /E /Z " +
                                 drives[i].Name + "cabs " +
                                 "c:\\pe__data\\cabs /y");
-                            x.StandardInput.WriteLine("copy " + 
-                                drives[i].Name + "ValidationOS.wim " + 
+                            x.StandardInput.WriteLine("copy " +
+                                drives[i].Name + "ValidationOS.wim " +
                                 MountPoint.Text + "\\media\\sources\\boot.wim /y");
                         }
                     }
@@ -628,7 +623,7 @@ namespace DimsISOTweaker
         void MaxScratch(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            if (Global.RedirectStandardInput == true)
             {
                 x.StandardInput.WriteLine("@C:\\pe__data\\DISM\\dism /mount-wim " +
                                                        "/wimfile:" + MountPoint.Text + "\\media\\sources\\boot.wim " +
@@ -699,30 +694,36 @@ namespace DimsISOTweaker
         private void StdOutClick(object sender, RoutedEventArgs e)
         {
             Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.WindowStyle== ProcessWindowStyle.Maximized) 
+            if (Global.WindowStyle == ProcessWindowStyle.Maximized)
             {
                 Global.WindowStyle = ProcessWindowStyle.Minimized;
-                x.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                x.StartInfo.CreateNoWindow = false;
-                x.Kill();
-                x.Start();
+                hWnd = x.MainWindowHandle.ToInt32();
+                Global.Handle = hWnd;
                 Out.Background = Brushes.Red;
+                ShowWindow(hWnd, SW_HIDE);
+                //x.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                //x.StartInfo.CreateNoWindow = false;
+                //x.Kill();
+                //x.Start();
             }
             else
             {
                 Global.WindowStyle = ProcessWindowStyle.Maximized;
-                x.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-                x.StartInfo.CreateNoWindow = false;
-                x.Kill();
-                x.Start();
                 Out.Background = Brushes.Green;
+                ShowWindow(hWnd, SW_SHOW);
+                hWnd = 0;
+
+                //x.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+                //x.StartInfo.CreateNoWindow = false;
+                //x.Kill();
+                //x.Start();
             }
         }
 
         void OnTopAgain(object sender, EventArgs e)
         {
-                Window window = (Window)sender;
-                window.Topmost = true;
+            Window window = (Window)sender;
+            window.Topmost = true;
         }
 
         void get_res(object sender, RoutedEventArgs e)
@@ -735,29 +736,29 @@ namespace DimsISOTweaker
                 case 1297:
                     MainScreen.Left = 35;
                     Global.PositionX = 35;
-                    MainScreen.Top = 
-                        (uint)System.Windows.SystemParameters.PrimaryScreenHeight-
-                        (uint)MainScreen.ActualHeight-35;
-                    Global.PositionX = 
-                        (int)System.Windows.SystemParameters.PrimaryScreenHeight - 
-                        (int)MainScreen.ActualHeight -35;
+                    MainScreen.Top =
+                        (uint)System.Windows.SystemParameters.PrimaryScreenHeight -
+                        (uint)MainScreen.ActualHeight - 35;
+                    Global.PositionX =
+                        (int)System.Windows.SystemParameters.PrimaryScreenHeight -
+                        (int)MainScreen.ActualHeight - 35;
                     break;
                 case 35:
-                    MainScreen.Left = 
-                        ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                    MainScreen.Left =
+                        ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) -
                         (uint)MainScreen.ActualWidth - 23;
-                    Global.PositionX = 
-                        ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                    Global.PositionX =
+                        ((int)System.Windows.SystemParameters.PrimaryScreenWidth) -
                         (int)MainScreen.ActualWidth - 23;
                     MainScreen.Top = 35;
                     Global.PositionY = 35;
                     break;
                 default:
-                    MainScreen.Left = 
-                        ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                    MainScreen.Left =
+                        ((uint)System.Windows.SystemParameters.PrimaryScreenWidth) -
                         (uint)MainScreen.ActualWidth - 23;
-                    Global.PositionX = 
-                        ((int)System.Windows.SystemParameters.PrimaryScreenWidth) - 
+                    Global.PositionX =
+                        ((int)System.Windows.SystemParameters.PrimaryScreenWidth) -
                         (int)MainScreen.ActualWidth - 23;
                     MainScreen.Top = 35;
                     Global.PositionY = 35;
@@ -767,10 +768,10 @@ namespace DimsISOTweaker
 
         void CheckEnterKey(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 Process x = Global.ps; MainScreen.Topmost = true;
-                if (Global.RedirectStandardInput == true) 
+                if (Global.RedirectStandardInput == true)
                 {
                     x.StandardInput.WriteLine(CmdInput.Text);
                 }
@@ -779,12 +780,14 @@ namespace DimsISOTweaker
 
         void TestISO(object sender, RoutedEventArgs e)
         {
-            Process x = Global.ps; MainScreen.Topmost = true;
-            if (Global.RedirectStandardInput == true) 
+            Process x = Global.ps; 
+            MainScreen.Topmost = true;
+            if (Global.RedirectStandardInput == true)
             {
-                if (!File.Exists("C:\\Program Files\\qemu\\qemu-system-x86_64.exe"))
+                if (File.Exists("C:\\Program Files\\qemu\\qemu-system-x86_64.exe")==false)
                 { x.StandardInput.WriteLine("powershell -command \"winget install qemu\""); }
-            } else
+            }
+            else
             {
                 x.StandardInput.WriteLine("pushd C:\\Program Files\\qemu & " +
                                           "start qemu-system-x86_64.exe " +

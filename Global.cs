@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace DimsISOTweaker
 {
@@ -13,6 +8,7 @@ namespace DimsISOTweaker
     {
         public static int PID { get; set; } = 0;
         public static Process ps { get; set; }
+        public static int Handle { get; set; } = 0;
         public static string Args { get; set; } = string.Empty;
         public static string EchoStat { get; set; } = "echo off";
         public static ProcessWindowStyle WindowStyle { get; set; } = ProcessWindowStyle.Maximized;
